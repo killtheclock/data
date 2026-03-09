@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=GFS+Didot&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
 
-  <!-- MathJax -->
+  <!-- MathJax — typeset: true ώστε να κάνει render και το header formula αμέσως -->
   <script>
     window.MathJax = {
       tex: {
@@ -28,18 +28,17 @@
 </head>
 <body>
 
-  <!-- ░░ BACKGROUND CANVAS ░░ -->
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-  <!-- ░░ HEADER ░░ -->
+  <!-- HEADER -->
   <header class="site-header">
     <div class="header-inner">
       <div class="header-left">
         <p class="site-eyebrow">Επιστημονικές Σημειώσεις</p>
         <h1 class="site-title">
           <span class="title-greek">Γνώση</span>
-          <span class="title-amp">&</span>
-          <span class="title-math">\( \mathcal{M} \)</span>
+          <span class="title-amp">&amp;</span>
+          <span class="title-math">Επιστήμη</span>
         </h1>
         <p class="site-sub">Μαθηματικά · Φυσική · Χημεία · Λογοτεχνία · Σημειώσεις</p>
       </div>
@@ -51,7 +50,7 @@
     </div>
   </header>
 
-  <!-- ░░ NAVIGATION TABS ░░ -->
+  <!-- NAVIGATION TABS -->
   <nav class="tab-bar" role="navigation" aria-label="Κατηγορίες">
     <div class="tab-bar-inner">
       <button class="tab active" data-cat="all" aria-pressed="true">
@@ -86,21 +85,17 @@
     </div>
   </nav>
 
-  <!-- ░░ SUB-CATEGORY BAR ░░ -->
+  <!-- SUB-CATEGORY BAR -->
   <div class="subtab-bar" id="subtab-bar" hidden>
-    <div class="subtab-bar-inner" id="subtab-inner">
-      <!-- sub-tabs injected by JS -->
-    </div>
+    <div class="subtab-bar-inner" id="subtab-inner"></div>
   </div>
 
-  <!-- ░░ MAIN GRID ░░ -->
+  <!-- MAIN GRID -->
   <main class="main-content" id="main">
     <div id="loading" class="loading-state">
       <span class="loading-text">Φόρτωση σελίδων…</span>
     </div>
-
     <div class="card-grid" id="grid" hidden>
-      <!-- cards injected by JS -->
       <div class="empty-state" id="empty-state" hidden>
         <p class="empty-math">\( \emptyset \)</p>
         <p class="empty-label">Καμία σελίδα σε αυτή την κατηγορία.</p>
@@ -108,7 +103,7 @@
     </div>
   </main>
 
-  <!-- ░░ FOOTER / HOW-TO ░░ -->
+  <!-- FOOTER -->
   <footer class="site-footer">
     <div class="footer-inner">
       <p class="footer-title">// Πώς να προσθέσεις νέα σελίδα</p>
