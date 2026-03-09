@@ -1,0 +1,117 @@
+[
+  {
+    "title": "Η Ταυτότητα (a+b)² — Μέθοδος Box Area",
+    "description": "Γεωμετρική απόδειξη της αλγεβρικής ταυτότητας μέσω εμβαδού τετραγώνου.",
+    "category": "math",
+    "subcategory": "Άλγεβρα",
+    "formula": "(a+b)^2 = a^2 + 2ab + b^2",
+    "url": "math/box-area-identity.html",
+    "date": "2025-06-10"
+  },
+  {
+    "title": "Σειρά Taylor — Ανάπτυξη Συναρτήσεων",
+    "description": "Ανάπτυξη συναρτήσεων σε δυναμοσειρές γύρω από ένα σημείο α.",
+    "category": "math",
+    "subcategory": "Ανάλυση",
+    "formula": "f(x) = \\sum_{n=0}^{\\infty} \\frac{f^{(n)}(a)}{n!}(x-a)^n",
+    "url": "math/taylor-series.html",
+    "date": "2025-06-08"
+  },
+  {
+    "title": "Ολοκλήρωμα Riemann",
+    "description": "Ορισμός και ιδιότητες του ολοκληρώματος Riemann.",
+    "category": "math",
+    "subcategory": "Ανάλυση",
+    "formula": "\\int_a^b f(x)\\,dx = \\lim_{n\\to\\infty} \\sum_{i=1}^n f(x_i)\\Delta x",
+    "url": "math/riemann-integral.html",
+    "date": "2025-06-06"
+  },
+  {
+    "title": "Θεώρημα Πυθαγόρα — Γεωμετρική Απόδειξη",
+    "description": "Κλασική γεωμετρική απόδειξη με τετράγωνα.",
+    "category": "math",
+    "subcategory": "Γεωμετρία",
+    "formula": "a^2 + b^2 = c^2",
+    "url": "math/pythagoras.html",
+    "date": "2025-06-04"
+  },
+  {
+    "title": "Νόμοι του Νεύτωνα — Κλασική Μηχανική",
+    "description": "Οι τρεις θεμελιώδεις νόμοι της κλασικής μηχανικής με παραδείγματα.",
+    "category": "physics",
+    "subcategory": "Μηχανική",
+    "formula": "F = ma",
+    "url": "physics/newton-laws.html",
+    "date": "2025-06-05"
+  },
+  {
+    "title": "Εξίσωση Schrödinger",
+    "description": "Η χρονοεξαρτώμενη εξίσωση Schrödinger και η κυματοσυνάρτηση.",
+    "category": "physics",
+    "subcategory": "Κβαντική",
+    "formula": "i\\hbar\\frac{\\partial}{\\partial t}\\Psi = \\hat{H}\\Psi",
+    "url": "physics/schrodinger.html",
+    "date": "2025-06-03"
+  },
+  {
+    "title": "Εξισώσεις Maxwell",
+    "description": "Οι τέσσερις θεμελιώδεις εξισώσεις του ηλεκτρομαγνητισμού.",
+    "category": "physics",
+    "subcategory": "Ηλεκτρομαγνητισμός",
+    "formula": "\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}",
+    "url": "physics/maxwell.html",
+    "date": "2025-06-01"
+  },
+  {
+    "title": "Περιοδικός Πίνακας — Ηλεκτρονιακή Δομή",
+    "description": "Κατανόηση της δομής του περιοδικού πίνακα μέσω κβαντικών αριθμών.",
+    "category": "chemistry",
+    "subcategory": "Ατομική Δομή",
+    "formula": "E_n = -\\frac{13.6\\text{ eV}}{n^2}",
+    "url": "chemistry/periodic-table.html",
+    "date": "2025-06-01"
+  },
+  {
+    "title": "Χημική Ισορροπία — Αρχή Le Chatelier",
+    "description": "Πώς ένα σύστημα αντιδρά σε εξωτερικές μεταβολές.",
+    "category": "chemistry",
+    "subcategory": "Ισορροπία",
+    "formula": "K_c = \\frac{[C]^c[D]^d}{[A]^a[B]^b}",
+    "url": "chemistry/equilibrium.html",
+    "date": "2025-05-30"
+  },
+  {
+    "title": "Οδύσσεια — Θεματική Ανάλυση",
+    "description": "Ανάλυση των κεντρικών θεμάτων: νόστος, ταυτότητα, πίστη.",
+    "category": "literature",
+    "subcategory": "Αρχαία",
+    "url": "literature/odyssey-themes.html",
+    "date": "2025-05-28"
+  },
+  {
+    "title": "Καβάφης — Ποιητική Ανάλυση",
+    "description": "Θέματα ιστορίας, μνήμης και ηδονής στο έργο του Καβάφη.",
+    "category": "literature",
+    "subcategory": "Νέα Ελληνική",
+    "url": "literature/cavafy.html",
+    "date": "2025-05-24"
+  },
+  {
+    "title": "Θεώρημα Bayes — Πιθανότητες",
+    "description": "Βασικές αρχές πιθανοτήτων: χώρος δειγμάτων, γεγονότα, θεώρημα Bayes.",
+    "category": "notes",
+    "subcategory": "Στατιστική",
+    "formula": "P(A|B) = \\frac{P(B|A)\\,P(A)}{P(B)}",
+    "url": "notes/probability.html",
+    "date": "2025-05-25"
+  },
+  {
+    "title": "Σημειώσεις Γραμμικής Άλγεβρας",
+    "description": "Διανύσματα, πίνακες, ορίζουσες και γραμμικοί μετασχηματισμοί.",
+    "category": "notes",
+    "subcategory": "Μαθηματικά",
+    "formula": "\\det(A) = \\sum_{j=1}^n a_{ij}C_{ij}",
+    "url": "notes/linear-algebra.html",
+    "date": "2025-05-20"
+  }
+]
