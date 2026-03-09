@@ -1,13 +1,13 @@
 [
   {
-    "title": "Η Ταυτότητα (a+b)² — Μέθοδος Box Area",
-    "description": "Γεωμετρική απόδειξη της αλγεβρικής ταυτότητας μέσω εμβαδού τετραγώνου.",
-    "category": "math",
-    "subcategory": "Άλγεβρα",
-    "formula": "(a+b)^2 = a^2 + 2ab + b^2",
-    "url": "math/box-area-identity.html",
-    "date": "2025-06-10"
-  },
+  "title": "Γεωμετρική Άλγεβρα: Box Method",
+  "description": "Ανάλυση ταυτοτήτων και παραγοντοποίηση τριωνύμου μέσω εμβαδού (Area Model).",
+  "category": "math",
+  "subcategory": "Άλγεβρα",
+  "formula": "(a+b)^2 = a^2 + 2ab + b^2",
+  "url": "math/algebra-identities.html",
+  "date": "2024-05-20"
+},
   {
     "title": "Σειρά Taylor — Ανάπτυξη Συναρτήσεων",
     "description": "Ανάπτυξη συναρτήσεων σε δυναμοσειρές γύρω από ένα σημείο α.",
