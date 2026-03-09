@@ -1,12 +1,12 @@
 [
   {
-  "title": "Γεωμετρική Άλγεβρα: Box Method",
-  "description": "Ανάλυση ταυτοτήτων και παραγοντοποίηση τριωνύμου μέσω εμβαδού (Area Model).",
+  "title": "Μέθοδος Box Area — Ταυτότητες Τετραγώνου & Κύβου",
+  "description": "Γεωμετρικές αποδείξεις για (a+b)², (a-b)², (a+b)³ και (a-b)³ μέσω εμβαδών και όγκων. Με σύνδεση στο Διωνυμικό Θεώρημα.",
   "category": "math",
-  "subcategory": "Άλγεβρα",
-  "formula": "(a+b)^2 = a^2 + 2ab + b^2",
-  "url": "math/algebra-identities.html",
-  "date": "2024-05-20"
+  "subcategory": "Αλγεβρικές Ταυτότητες",
+  "formula": "(a+b)^3 = a^3 + 3a^2b + 3ab^2 + b^3",
+  "url": "math/box-area-identities.html",
+  "date": "2026-03-09"
 },
   {
     "title": "Σειρά Taylor — Ανάπτυξη Συναρτήσεων",
