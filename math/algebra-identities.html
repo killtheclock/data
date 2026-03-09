@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Γεωμετρική Ερμηνεία Ταυτοτήτων & Τριωνύμων</title>
+    <link rel="stylesheet" href="../assets/style.css">
+    <script>
+      window.MathJax = {
+        tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+        startup: { typeset: true }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    <style>
+        .box-container { display: flex; justify-content: space-around; flex-wrap: wrap; margin: 20px 0; }
+        .box-diag { border: 2px solid #333; padding: 10px; text-align: center; background: #f9f9f9; border-radius: 8px; }
+        table.box-method { border-collapse: collapse; margin: 20px auto; }
+        table.box-method td { border: 2px solid var(--math, #4a90e2); width: 80px; height: 60px; text-align: center; font-weight: bold; }
+        .label-v { writing-mode: vertical-rl; transform: rotate(180deg); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Γεωμετρική Μέθοδος Box/Area στην Άλγεβρα</h1>
+        
+        <section>
+            <h2>1. Ταυτότητες Τετραγώνου και Κύβου</h2>
+            <p>Η μέθοδος Box βασίζεται στην αρχή ότι το γινόμενο δύο ποσοτήτων αναπαριστά το <strong>εμβαδόν</strong> ενός ορθογωνίου.</p>
+            
+            <h3>Τετράγωνο Αθροίσματος $(a+b)^2$</h3>
+            <p>Φανταστείτε ένα τετράγωνο με πλευρά $a+b$. Το εμβαδόν του είναι το άθροισμα τεσσάρων επιμέρους περιοχών:</p>
+            <table class="box-method">
+                <tr><td></td><td>$a$</td><td>$b$</td></tr>
+                <tr><td>$a$</td><td>$a^2$</td><td>$ab$</td></tr>
+                <tr><td>$b$</td><td>$ab$</td><td>$b^2$</td></tr>
+            </table>
+            <p>Άρα: $(a+b)^2 = a^2 + 2ab + b^2$</p>
+
+            <h3>Κύβος Αθροίσματος $(a+b)^3$</h3>
+            <p>Εδώ περνάμε στις 3 διαστάσεις (Όγκος). Ο "κύβος" αποτελείται από 8 τμήματα: 
+                <ul>
+                    <li>1 κύβο πλευράς $a$ ($a^3$)</li>
+                    <li>3 ορθογώνια παραλληλεπίπεδα βάσης $a^2$ και ύψους $b$ ($3a^2b$)</li>
+                    <li>3 ορθογώνια παραλληλεπίπεδα βάσης $b^2$ και ύψους $a$ ($3ab^2$)</li>
+                    <li>1 κύβο πλευράς $b$ ($b^3$)</li>
+                </ul>
+                Σύνολο: $(a+b)^3 = a^3 + 3a^2b + 3ab^2 + b^3$
+            </p>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>2. Διαφορά Τετραγώνων vs Διαφορά Κύβων</h2>
+            <p><strong>Διαφορά Τετραγώνων $a^2 - b^2$:</strong> Αφαιρούμε ένα μικρό τετράγωνο $b^2$ από ένα μεγάλο $a^2$. Το σχήμα που απομένει μπορεί να αναδιαταχθεί σε ένα ορθογώνιο με πλευρές $(a-b)$ και $(a+b)$.</p>
+            
+            <p><strong>Διαφορά Κύβων $a^3 - b^3$:</strong> Αφαιρούμε έναν μικρό κύβο από έναν μεγάλο. Ο όγκος που απομένει χωρίζεται σε τρία παραλληλεπίπεδα που όλα έχουν κοινό παράγοντα το $(a-b)$.</p>
+            <p>$$a^3 - b^3 = (a-b)(a^2 + ab + b^2)$$</p>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>3. Παραγοντοποίηση Τριωνύμου με Μ.Κ.Δ. και Box Method</h2>
+            <p>Έστω το τριώνυμο: $2x^2 + 7x + 3$</p>
+            <p><strong>Βήμα 1:</strong> Πολλαπλασιάζουμε το $a \cdot c = 2 \cdot 3 = 6$. Ψάχνουμε δύο αριθμούς με γινόμενο $6$ και άθροισμα $7$ (τους $6$ και $1$).</p>
+            <p><strong>Βήμα 2:</strong> Τοποθετούμε τους όρους στο Box:</p>
+            
+            <table class="box-method">
+                <tr><td></td><td><strong>?</strong></td><td><strong>?</strong></td></tr>
+                <tr><td><strong>?</strong></td><td>$2x^2$</td><td>$6x$</td></tr>
+                <tr><td><strong>?</strong></td><td>$1x$</td><td>$3$</td></tr>
+            </table>
+
+            <p><strong>Βήμα 3:</strong> Βρίσκουμε τον Μέγιστο Κοινό Διαιρέτη (ΜΚΔ) για κάθε γραμμή και στήλη:</p>
+            <ul>
+                <li>ΜΚΔ($2x^2, 6x$) = <strong>$2x$</strong> (1η γραμμή)</li>
+                <li>ΜΚΔ($1x, 3$) = <strong>$1$</strong> (2η γραμμή)</li>
+                <li>ΜΚΔ($2x^2, 1x$) = <strong>$x$</strong> (1η στήλη)</li>
+                <li>ΜΚΔ($6x, 3$) = <strong>$3$</strong> (2η στήλη)</li>
+            </ul>
+
+            <p>Έτσι προκύπτουν οι παράγοντες: <strong>$(2x + 1)(x + 3)$</strong></p>
+        </section>
+
+        <a href="../index.html">← Επιστροφή στην Αρχική</a>
+    </div>
+</body>
+</html>
