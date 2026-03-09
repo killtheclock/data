@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Μέθοδος Box Area — Ταυτότητες Τετραγώνου & Κύβου</title>
+  <title>Αλγεβρικές Ταυτότητες — Μέθοδος Box/Area</title>
 
   <script>
     window.MathJax = {
       tex: {
-        inlineMath:  [['$','$'], ['\\(','\\)']],
-        displayMath: [['$$','$$'], ['\\[','\\]']]
+        inlineMath:  [['\\(','\\)']],
+        displayMath: [['\\[','\\]']]
       },
       options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] },
       startup: { typeset: true }
@@ -19,12 +19,18 @@
   <link href="https://fonts.googleapis.com/css2?family=GFS+Didot&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
 
   <style>
+    /* ── RESET ── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+
+    /* ── TOKENS ── */
     :root {
       --bg:        #0b0c0f;
       --surface:   #11131a;
       --surface-2: #171a23;
       --border:    #1f2333;
       --border-2:  #2a2f44;
+      --border-3:  #363d58;
       --text:      #dde1ee;
       --text-mid:  #8a92b2;
       --text-dim:  #4a5070;
@@ -34,12 +40,10 @@
       --violet:    #a78cf0;
       --rose:      #e07898;
       --serif:     'Crimson Pro', 'GFS Didot', Georgia, serif;
-      --mono:      'JetBrains Mono', monospace;
+      --mono:      'JetBrains Mono', 'Courier New', monospace;
     }
 
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior: smooth; }
-
+    /* ── BASE ── */
     body {
       background: var(--bg);
       color: var(--text);
@@ -47,6 +51,7 @@
       font-size: 18px;
       line-height: 1.85;
       -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
     }
 
     body::before {
@@ -67,234 +72,215 @@
     }
 
     /* ── LAYOUT ── */
-    .page-wrap {
+    .wrap {
       position: relative; z-index: 1;
-      max-width: 760px;
+      max-width: 740px;
       margin: 0 auto;
-      padding: 0 40px;
+      padding: 0 36px 80px;
     }
 
     /* ── TOPBAR ── */
     .topbar {
       padding: 28px 0 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
     }
-
     .back {
-      font-family: var(--mono); font-size: 0.62rem;
+      font-family: var(--mono); font-size: 0.6rem;
       letter-spacing: 0.1em; text-decoration: none;
-      color: var(--text-dim);
-      display: inline-flex; align-items: center; gap: 6px;
-      transition: color 0.2s;
+      color: var(--text-dim); transition: color .2s;
     }
     .back:hover { color: var(--accent); }
-
-    .post-nav {
+    .breadcrumb {
       font-family: var(--mono); font-size: 0.58rem;
-      letter-spacing: 0.1em; color: var(--text-dim);
+      letter-spacing: 0.08em; color: var(--text-dim);
     }
 
-    /* ── HEADER ── */
-    .post-header {
-      padding: 40px 0 32px;
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 38px 0 30px;
       border-bottom: 1px solid var(--border);
-      margin-bottom: 48px;
+      margin-bottom: 52px;
     }
-
-    .post-meta {
+    .meta {
       font-family: var(--mono); font-size: 0.6rem;
       letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 16px;
-      display: flex; gap: 10px; align-items: center;
-      flex-wrap: wrap;
+      color: var(--accent); margin-bottom: 14px;
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
     }
-    .post-meta .sep { color: var(--border-2); }
-    .post-meta .date { color: var(--text-dim); }
-
+    .meta .sep { color: var(--border-2); }
+    .meta .date { color: var(--text-dim); }
     h1 {
       font-family: var(--serif); font-weight: 300;
-      font-size: clamp(1.9rem, 4.5vw, 3rem);
-      line-height: 1.12; letter-spacing: -0.015em;
-      margin-bottom: 14px;
+      font-size: clamp(1.9rem, 4.5vw, 2.9rem);
+      line-height: 1.1; letter-spacing: -.015em;
+      color: var(--text); margin-bottom: 12px;
     }
     h1 em { font-style: italic; color: var(--gold); }
-
-    .subtitle {
+    .sub {
       font-style: italic; color: var(--text-mid);
-      font-size: 1.05rem; line-height: 1.6;
-      max-width: 600px;
+      font-size: 1rem; line-height: 1.6;
     }
 
-    /* ── SECTION ── */
+    /* ── SECTIONS ── */
     .section { margin-bottom: 64px; }
 
     h2 {
       font-family: var(--serif); font-weight: 400;
-      font-size: 1.45rem; color: var(--text);
-      margin-bottom: 20px;
-      padding-bottom: 10px;
+      font-size: 1.42rem; color: var(--text);
+      padding-bottom: 10px; margin-bottom: 18px;
       border-bottom: 1px solid var(--border);
       display: flex; align-items: center; gap: 12px;
     }
-
-    .sec-num {
-      font-family: var(--mono); font-size: 0.6rem;
+    .snum {
+      font-family: var(--mono); font-size: 0.58rem;
       color: var(--accent); letter-spacing: 0.1em;
       border: 1px solid var(--border-2);
-      padding: 2px 8px; border-radius: 2px;
-      flex-shrink: 0;
+      padding: 2px 8px; border-radius: 2px; flex-shrink: 0;
     }
-
     h3 {
-      font-family: var(--serif); font-weight: 400;
-      font-style: italic; font-size: 1.1rem;
-      color: var(--text-mid); margin: 32px 0 10px;
+      font-family: var(--serif); font-style: italic; font-weight: 400;
+      font-size: 1.1rem; color: var(--text-mid);
+      margin: 28px 0 10px;
     }
+    p { margin-bottom: 14px; color: var(--text); }
+    strong { color: var(--text); font-weight: 600; }
 
-    p { margin-bottom: 16px; color: var(--text); }
-
-    /* ── THEOREM ── */
-    .theorem {
+    /* ── IDENTITY BOX ── */
+    .identity {
       background: var(--surface-2);
       border: 1px solid var(--border-2);
       border-left: 3px solid var(--gold);
-      padding: 16px 22px; margin: 24px 0 28px;
-      border-radius: 0 3px 3px 0;
-      font-size: 1rem;
+      padding: 14px 20px; margin: 20px 0 24px;
+      border-radius: 0 3px 3px 0; color: var(--text);
     }
-    .theorem .tlabel {
-      font-family: var(--mono); font-size: 0.56rem;
+    .identity .ilabel {
+      font-family: var(--mono); font-size: 0.55rem;
       text-transform: uppercase; letter-spacing: 0.14em;
-      color: var(--gold); margin-bottom: 8px;
+      color: var(--gold); margin-bottom: 6px;
     }
-    .theorem.violet { border-left-color: var(--violet); }
-    .theorem.violet .tlabel { color: var(--violet); }
+    .identity.violet { border-left-color: var(--violet); }
+    .identity.violet .ilabel { color: var(--violet); }
+    .identity.green  { border-left-color: var(--green); }
+    .identity.green  .ilabel { color: var(--green); }
+    .identity.rose   { border-left-color: var(--rose); }
+    .identity.rose   .ilabel { color: var(--rose); }
+    .identity.blue   { border-left-color: var(--accent); }
+    .identity.blue   .ilabel { color: var(--accent); }
 
-    /* ── MATH DISPLAY ── */
-    .math-block {
-      background: var(--surface);
-      border: 1px solid var(--border-2);
-      border-left: 3px solid var(--gold);
-      padding: 16px 24px; margin: 20px 0;
-      overflow-x: auto; text-align: center;
-      border-radius: 0 3px 3px 0;
+    /* ── BOX / AREA TABLE ── */
+    /*
+      Fixed grid approach — no HTML <table>.
+      All cells: explicit bg + color, no inheritance from browser.
+
+      2-column box:  3 cols × 3 rows  (corner | top×2 | left×2 | cell×4)
+      3-column box:  4 cols × 3 rows
+    */
+    .box-wrap {
+      margin: 24px 0 8px;
+      display: inline-block;
     }
-
-    /* ── STEPS ── */
-    .steps { list-style: none; margin: 16px 0 24px; counter-reset: st; }
-    .steps li {
-      counter-increment: st;
-      display: flex; gap: 14px;
-      margin-bottom: 14px; align-items: flex-start;
-    }
-    .steps li::before {
-      content: counter(st);
-      font-family: var(--serif); font-style: italic;
-      font-size: 1.4rem; color: var(--gold);
-      line-height: 1.15; flex-shrink: 0; width: 18px;
-    }
-    .steps li p { margin: 0; }
-
-    /* ════════════════════════════════════════
-       BOX DIAGRAMS
-       Δομή: axis-corner | axis-top-cells
-                axis-left | grid-cells
-    ════════════════════════════════════════ */
-
-    .diagram-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;   /* left-align, not centered */
-      margin: 28px 0 8px;
-      gap: 10px;
-    }
-
-    .diagram-caption {
-      font-family: var(--mono); font-size: 0.58rem;
+    .box-caption {
+      font-family: var(--mono); font-size: 0.57rem;
       letter-spacing: 0.09em; text-transform: uppercase;
-      color: var(--text-dim); margin-left: 4px;
+      color: var(--text-dim); margin-top: 8px; display: block;
     }
 
-    /* The outer table-like wrapper */
-    .box-layout {
+    /* shared grid base */
+    .bg {
       display: grid;
-      /* col 0 = left-axis width, rest = equal cell cols */
+      border: 2px solid var(--border-2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    /* 2-col box  (corner + 2 top + 2 left + 4 cells) */
+    .bg2 {
+      grid-template-columns: 52px 130px 130px;
+      grid-template-rows:    34px 100px 100px;
+    }
+    /* 3-col box  (corner + 3 top + 2 left + 6 cells) */
+    .bg3 {
+      grid-template-columns: 52px 110px 110px 110px;
+      grid-template-rows:    34px 100px 100px;
     }
 
-    /* ── 2×2 ── */
-    .box-layout-2 {
-      grid-template-columns: 48px 120px 120px;
-      grid-template-rows: 36px 100px 100px;
-    }
-
-    /* ── 2×2 for cube layers ── */
-    .box-layout-cube {
-      grid-template-columns: 48px 130px 130px;
-      grid-template-rows: 36px 110px 110px;
-    }
-
-    /* corner cell (top-left, empty) */
-    .bc-corner { /* empty */ }
-
-    /* top axis labels */
-    .bc-top {
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--serif); font-style: italic;
-      font-size: 1rem; color: var(--text-mid);
+    /* corner */
+    .bc {
+      background: var(--bg);
+      border-right: 1px solid var(--border-2);
       border-bottom: 1px solid var(--border-2);
     }
-
-    /* left axis labels */
-    .bc-left {
-      display: flex; align-items: center; justify-content: flex-end;
-      padding-right: 10px;
-      font-family: var(--serif); font-style: italic;
-      font-size: 1rem; color: var(--text-mid);
+    /* top labels */
+    .bt {
+      background: var(--surface-2);
+      color: var(--text-mid);
       border-right: 1px solid var(--border-2);
+      border-bottom: 2px solid var(--border-2);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--serif); font-style: italic; font-size: 1rem;
     }
-
-    /* grid cells */
-    .bc-cell {
-      border: 1px solid var(--border-2);
+    .bt:last-of-type { border-right: none; }
+    /* left labels */
+    .bl {
+      background: var(--surface-2);
+      color: var(--text-mid);
+      border-right: 2px solid var(--border-2);
+      border-bottom: 1px solid var(--border-2);
+      display: flex; align-items: center; justify-content: flex-end;
+      padding-right: 12px;
+      font-family: var(--serif); font-style: italic; font-size: 1rem;
+    }
+    /* data cells */
+    .bv {
+      background: var(--surface);
+      color: var(--text);
+      border-right: 1px solid var(--border-2);
+      border-bottom: 1px solid var(--border-2);
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      font-family: var(--serif); font-style: italic;
-      font-size: 0.95rem; line-height: 1.4;
-      padding: 10px 8px;
-      text-align: center;
+      padding: 8px 6px; text-align: center;
+      font-family: var(--serif); font-style: italic; font-size: 1rem;
+      line-height: 1.3;
     }
+    /* remove right border on last cell of each row */
+    .bg2 .bv:nth-child(3n),
+    .bg3 .bv:nth-child(4n) { border-right: none; }
+    /* remove bottom border on last row */
+    .bg2 .bl:last-of-type,
+    .bg2 .bv:nth-last-child(-n+2),
+    .bg3 .bl:last-of-type,
+    .bg3 .bv:nth-last-child(-n+3) { border-bottom: none; }
 
-    .bc-cell .dim {
-      font-size: 0.65rem; font-style: normal;
+    /* per-cell colour classes */
+    .ca2  { background: rgba(126,184,247,.09); color: var(--accent); }
+    .cab  { background: rgba(200,169,110,.09); color: var(--gold); }
+    .cmab { background: rgba(224,120,152,.09); color: var(--rose); }   /* −ab */
+    .cb2  { background: rgba(109,219,180,.09); color: var(--green); }
+    .ca3  { background: rgba(126,184,247,.11); color: var(--accent); }
+    .ca2b { background: rgba(200,169,110,.11); color: var(--gold); }
+    .cmab2{ background: rgba(167,140,240,.09); color: var(--violet); } /* −a²b */
+    .cab2 { background: rgba(167,140,240,.11); color: var(--violet); }
+    .cb3  { background: rgba(109,219,180,.11); color: var(--green); }
+    .cmb3 { background: rgba(224,120,152,.11); color: var(--rose); }
+    .cf1  { background: rgba(126,184,247,.09); color: var(--accent); }
+    .cf2  { background: rgba(167,140,240,.09); color: var(--violet); }
+    .cf3  { background: rgba(200,169,110,.09); color: var(--gold); }
+    .cf4  { background: rgba(109,219,180,.09); color: var(--green); }
+
+    /* small annotation inside cell */
+    .cdim {
+      font-size: 0.6rem; font-style: normal;
       font-family: var(--mono); color: var(--text-dim);
-      margin-top: 4px; letter-spacing: 0.04em;
+      margin-top: 4px; letter-spacing: 0.03em;
     }
 
-    /* colour classes */
-    .c-a2  { background: rgba(126,184,247,0.08); color: var(--accent); }
-    .c-ab  { background: rgba(200,169,110,0.08); color: var(--gold); }
-    .c-b2  { background: rgba(109,219,180,0.08); color: var(--green); }
-    .c-a3  { background: rgba(126,184,247,0.10); color: var(--accent); }
-    .c-a2b { background: rgba(200,169,110,0.10); color: var(--gold); }
-    .c-ab2 { background: rgba(167,140,240,0.10); color: var(--violet); }
-    .c-b3  { background: rgba(109,219,180,0.10); color: var(--green); }
-
-    /* ── LEGEND ── */
-    .legend {
-      display: flex; flex-wrap: wrap;
-      gap: 14px; margin: 12px 0 28px;
-    }
-    .legend-item {
-      display: flex; align-items: center;
-      gap: 8px; font-family: var(--serif);
-      font-style: italic; font-size: 0.9rem;
-      color: var(--text-mid);
-    }
-    .leg-dot {
-      width: 10px; height: 10px;
-      border-radius: 2px; flex-shrink: 0;
+    /* ── SUM LINE ── */
+    .sum-line {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      padding: 10px 18px; margin: 14px 0;
+      border-radius: 0 3px 3px 0;
+      font-size: 0.95rem; color: var(--text);
     }
 
     /* ── PROOF CHAIN ── */
@@ -302,443 +288,470 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 3px;
-      padding: 18px 24px; margin: 20px 0;
+      padding: 14px 20px; margin: 16px 0;
     }
-    .proof-row {
+    .pr {
       display: grid;
-      grid-template-columns: 90px 1fr;
-      gap: 8px 16px;
+      grid-template-columns: 104px 1fr;
+      gap: 4px 12px;
       padding: 5px 0;
       border-bottom: 1px solid var(--border);
-      font-size: 0.95rem;
+      font-size: 0.95rem; color: var(--text);
+      align-items: center;
     }
-    .proof-row:last-child { border-bottom: none; }
-    .proof-label {
-      font-family: var(--mono); font-size: 0.56rem;
+    .pr:last-child { border-bottom: none; }
+    .pr-l {
+      font-family: var(--mono); font-size: 0.53rem;
       text-transform: uppercase; letter-spacing: 0.1em;
-      color: var(--text-dim); display: flex; align-items: center;
+      color: var(--text-dim);
     }
 
-    /* ── VERIFY BOXES ── */
-    .verify-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px; margin: 20px 0 28px;
+    /* ── STEPS (numbered) ── */
+    .steps { list-style: none; margin: 14px 0 20px; }
+    .steps li {
+      display: flex; gap: 12px;
+      margin-bottom: 12px; align-items: flex-start;
+      color: var(--text);
     }
-    .verify-box {
+    .steps li .sn {
+      font-family: var(--mono); font-size: 0.58rem;
+      color: var(--accent); background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      padding: 2px 7px; border-radius: 2px;
+      flex-shrink: 0; margin-top: 3px;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── VERIFY ── */
+    .verify {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 14px; margin: 16px 0 28px;
+    }
+    .vbox {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 3px;
-      padding: 16px 18px;
+      border-radius: 3px; padding: 14px 17px;
     }
-    .verify-box .vlabel {
-      font-family: var(--mono); font-size: 0.56rem;
+    .vlabel {
+      font-family: var(--mono); font-size: 0.54rem;
       text-transform: uppercase; letter-spacing: 0.1em;
-      color: var(--text-dim); margin-bottom: 10px;
+      color: var(--text-dim); margin-bottom: 8px;
     }
-    .verify-box p { margin: 4px 0; font-size: 0.92rem; }
-    .verify-box .ok { color: var(--green); font-style: italic; margin-top: 8px; }
+    .vbox p { margin: 3px 0; font-size: 0.91rem; color: var(--text); }
+    .vbox .ok { color: var(--green); font-style: italic; margin-top: 6px; }
 
     /* ── SUMMARY TABLE ── */
-    .summary {
+    .sum-table {
       width: 100%; border-collapse: collapse;
-      margin: 20px 0; font-size: 0.92rem;
+      margin: 18px 0; font-size: 0.91rem;
     }
-    .summary th {
-      font-family: var(--mono); font-size: 0.58rem;
+    .sum-table th {
+      font-family: var(--mono); font-size: 0.56rem;
       text-transform: uppercase; letter-spacing: 0.1em;
       color: var(--text-dim); padding: 10px 14px;
       border-bottom: 2px solid var(--border-2); text-align: left;
+      background: var(--surface-2);
     }
-    .summary td {
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--border);
+    .sum-table td {
+      padding: 10px 14px; border-bottom: 1px solid var(--border);
+      color: var(--text); background: var(--surface);
       vertical-align: top;
     }
-    .summary tr:last-child td { border-bottom: none; }
-    .summary .td-id { color: var(--gold); font-style: italic; white-space: nowrap; }
+    .sum-table tr:last-child td { border-bottom: none; }
+    .tid { color: var(--gold); font-style: italic; white-space: nowrap; }
 
     /* ── NOTE ── */
     .note {
       background: var(--surface-2);
       border: 1px solid var(--border);
       border-left: 3px solid var(--text-dim);
-      padding: 14px 20px; margin: 28px 0;
+      padding: 12px 18px; margin: 24px 0 0;
       border-radius: 0 3px 3px 0;
       font-size: 0.9rem; color: var(--text-mid);
-      font-style: italic;
+      font-style: italic; line-height: 1.7;
     }
 
     /* ── FOOTER ── */
-    .post-footer {
+    .foot {
       border-top: 1px solid var(--border);
-      padding: 22px 0 52px;
+      padding: 20px 0 0; margin-top: 20px;
       display: flex; justify-content: space-between;
-      align-items: center; flex-wrap: wrap; gap: 10px;
+      flex-wrap: wrap; gap: 8px;
     }
-    .post-footer span {
-      font-family: var(--mono); font-size: 0.57rem;
+    .foot span {
+      font-family: var(--mono); font-size: 0.55rem;
       color: var(--text-dim); letter-spacing: 0.06em;
     }
 
-    @media (max-width: 640px) {
-      .page-wrap { padding: 0 20px; }
-      .box-layout-2, .box-layout-cube {
-        grid-template-columns: 36px 90px 90px;
-        grid-template-rows: 32px 80px 80px;
-      }
-      .verify-grid { grid-template-columns: 1fr; }
-      .proof-row { grid-template-columns: 70px 1fr; }
+    @media (max-width: 600px) {
+      .wrap { padding: 0 18px 60px; }
+      .bg2 { grid-template-columns: 38px 98px 98px; grid-template-rows: 30px 80px 80px; }
+      .bg3 { grid-template-columns: 38px 82px 82px 82px; grid-template-rows: 30px 80px 80px; }
+      .verify { grid-template-columns: 1fr; }
+      .pr { grid-template-columns: 78px 1fr; }
     }
   </style>
 </head>
 <body>
-<div class="page-wrap">
+<div class="wrap">
 
   <!-- TOPBAR -->
   <div class="topbar">
     <a class="back" href="../index.html">← index</a>
-    <span class="post-nav">math / αλγεβρικές ταυτότητες</span>
+    <span class="breadcrumb">math / αλγεβρικές ταυτότητες</span>
   </div>
 
   <!-- HEADER -->
-  <div class="post-header">
-    <p class="post-meta">
+  <div class="page-header">
+    <p class="meta">
       <span>Μαθηματικά</span>
       <span class="sep">/</span>
       <span>Αλγεβρικές Ταυτότητες</span>
       <span class="sep">·</span>
       <span class="date">09 Μαρτίου 2026</span>
     </p>
-    <h1>Μέθοδος <em>Box Area</em><br/>Ταυτότητες Τετραγώνου &amp; Κύβου</h1>
-    <p class="subtitle">
-      Πώς αποδεικνύουμε τις αλγεβρικές ταυτότητες βλέποντάς τες
-      ως εμβαδά και όγκους — χωρίς αλγεβρικούς χειρισμούς.
-    </p>
+    <h1>Αλγεβρικές Ταυτότητες<br/><em>Μέθοδος Box / Area</em></h1>
+    <p class="sub">Γεωμετρική ερμηνεία αλγεβρικών ταυτοτήτων — τετράγωνα, κύβοι, διαφορές, παραγοντοποίηση.</p>
   </div>
 
 
-  <!-- ══════════════════════════════════════
-       §1  ΤΕΤΡΑΓΩΝΟ — (a+b)²
-  ══════════════════════════════════════ -->
+  <!-- ════════════════════════════════
+       §1  (a+b)²
+  ════════════════════════════════ -->
   <div class="section">
-    <h2><span class="sec-num">§1</span> Ταυτότητα τετραγώνου — $(a+b)^2$</h2>
+    <h2><span class="snum">§1</span> Ανάπτυγμα τετραγώνου: \((a+b)^2\)</h2>
 
-    <div class="theorem">
-      <div class="tlabel">Ταυτότητα</div>
-      $$(a+b)^2 \;=\; a^2 + 2ab + b^2$$
+    <div class="identity">
+      <div class="ilabel">Ταυτότητα</div>
+      \[(a+b)^2 = a^2 + 2ab + b^2\]
     </div>
 
     <p>
-      Φανταζόμαστε ένα τετράγωνο με πλευρά $a+b$.
-      Το εμβαδόν του είναι $(a+b)^2$.
-      Χωρίζουμε κάθε πλευρά σε δύο τμήματα μήκους $a$ και $b$
-      — οι χαράξεις δημιουργούν τέσσερα ορθογώνια.
+      Φανταζόμαστε ένα τετράγωνο πλευράς \(a+b\).
+      Χωρίζουμε κάθε πλευρά σε τμήματα \(a\) και \(b\).
+      Κάθε κελί = γινόμενο <em>στήλης × γραμμής</em>:
     </p>
 
-    <!-- 2×2 DIAGRAM -->
-    <div class="diagram-wrap">
-      <div class="box-layout box-layout-2">
-        <!-- row 0: corner + top labels -->
-        <div class="bc-corner"></div>
-        <div class="bc-top">$a$</div>
-        <div class="bc-top">$b$</div>
-        <!-- row 1: left label a + cells -->
-        <div class="bc-left">$a$</div>
-        <div class="bc-cell c-a2">
-          $a^2$
-          <span class="dim">πλευρά $a$ × πλευρά $a$</span>
-        </div>
-        <div class="bc-cell c-ab">
-          $ab$
-          <span class="dim">πλευρά $a$ × πλευρά $b$</span>
-        </div>
-        <!-- row 2: left label b + cells -->
-        <div class="bc-left">$b$</div>
-        <div class="bc-cell c-ab">
-          $ab$
-          <span class="dim">πλευρά $b$ × πλευρά $a$</span>
-        </div>
-        <div class="bc-cell c-b2">
-          $b^2$
-          <span class="dim">πλευρά $b$ × πλευρά $b$</span>
-        </div>
+    <div class="box-wrap">
+      <div class="bg bg2">
+        <div class="bc"></div>
+        <div class="bt">\(a\)</div>
+        <div class="bt">\(b\)</div>
+
+        <div class="bl">\(a\)</div>
+        <div class="bv ca2">\(a^2\)<span class="cdim">\(a \times a\)</span></div>
+        <div class="bv cab">\(ab\)<span class="cdim">\(a \times b\)</span></div>
+
+        <div class="bl">\(b\)</div>
+        <div class="bv cab">\(ba\)<span class="cdim">\(b \times a\)</span></div>
+        <div class="bv cb2">\(b^2\)<span class="cdim">\(b \times b\)</span></div>
       </div>
-      <p class="diagram-caption">Διάγραμμα 1 — τετράγωνο πλευράς $(a+b)$</p>
+      <span class="box-caption">Τετράγωνο πλευράς \((a+b)\)</span>
     </div>
 
-    <div class="legend">
-      <div class="legend-item">
-        <div class="leg-dot" style="background:rgba(126,184,247,0.5)"></div>
-        $a^2$ — τετράγωνο, πλευρά $a \times a$
+    <div class="sum-line">
+      Άθροισμα: \(a^2 + ab + ba + b^2 = a^2 + 2ab + b^2\)
+    </div>
+
+    <div class="verify">
+      <div class="vbox">
+        <div class="vlabel">\(a=3,\; b=2\)</div>
+        <p>\((3+2)^2 = 25\)</p>
+        <p>\(9 + 6 + 6 + 4 = 25\)</p>
+        <p class="ok">✓</p>
       </div>
-      <div class="legend-item">
-        <div class="leg-dot" style="background:rgba(200,169,110,0.5)"></div>
-        $ab$ — ορθογώνιο $a \times b$ (εμφανίζεται <strong>δύο φορές</strong>)
+      <div class="vbox">
+        <div class="vlabel">\(a=5,\; b=1\)</div>
+        <p>\((5+1)^2 = 36\)</p>
+        <p>\(25 + 5 + 5 + 1 = 36\)</p>
+        <p class="ok">✓</p>
       </div>
-      <div class="legend-item">
-        <div class="leg-dot" style="background:rgba(109,219,180,0.5)"></div>
-        $b^2$ — τετράγωνο, πλευρά $b \times b$
-      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════
+       §2  (a−b)²
+  ════════════════════════════════ -->
+  <div class="section">
+    <h2><span class="snum">§2</span> Ανάπτυγμα τετραγώνου: \((a-b)^2\)</h2>
+
+    <div class="identity">
+      <div class="ilabel">Ταυτότητα</div>
+      \[(a-b)^2 = a^2 - 2ab + b^2\]
     </div>
 
     <p>
-      Το συνολικό εμβαδόν είναι το άθροισμα των τεσσάρων κελιών.
-      Τα δύο ορθογώνια $ab$ στην κύρια και δευτερεύουσα διαγώνιο
-      είναι ίσα, οπότε συγχωνεύονται σε $2ab$:
+      Ίδια μέθοδος — αντικαθιστούμε \(b \to -b\).
+      Τα κελιά με \(-b\) αλλάζουν πρόσημο:
     </p>
+
+    <div class="box-wrap">
+      <div class="bg bg2">
+        <div class="bc"></div>
+        <div class="bt">\(a\)</div>
+        <div class="bt">\(-b\)</div>
+
+        <div class="bl">\(a\)</div>
+        <div class="bv ca2">\(a^2\)<span class="cdim">\(a \times a\)</span></div>
+        <div class="bv cmab">\(-ab\)<span class="cdim">\(a \times (-b)\)</span></div>
+
+        <div class="bl">\(-b\)</div>
+        <div class="bv cmab">\(-ba\)<span class="cdim">\((-b) \times a\)</span></div>
+        <div class="bv cb2">\(b^2\)<span class="cdim">\((-b){\times}(-b)\)</span></div>
+      </div>
+      <span class="box-caption">Τετράγωνο με \(b \to -b\)</span>
+    </div>
+
+    <div class="sum-line">
+      Άθροισμα: \(a^2 - ab - ba + b^2 = a^2 - 2ab + b^2\)
+    </div>
+
+    <div class="verify">
+      <div class="vbox">
+        <div class="vlabel">\(a=5,\; b=2\)</div>
+        <p>\((5-2)^2 = 9\)</p>
+        <p>\(25 - 10 - 10 + 4 = 9\)</p>
+        <p class="ok">✓</p>
+      </div>
+      <div class="vbox">
+        <div class="vlabel">\(a=4,\; b=1\)</div>
+        <p>\((4-1)^2 = 9\)</p>
+        <p>\(16 - 4 - 4 + 1 = 9\)</p>
+        <p class="ok">✓</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════
+       §3  a²−b²
+  ════════════════════════════════ -->
+  <div class="section">
+    <h2><span class="snum">§3</span> Διαφορά τετραγώνων: \(a^2 - b^2\)</h2>
+
+    <div class="identity rose">
+      <div class="ilabel">Ταυτότητα</div>
+      \[a^2 - b^2 = (a-b)(a+b)\]
+    </div>
+
+    <p>
+      Επαληθεύουμε πολλαπλασιάζοντας \((a-b)(a+b)\) με Box/Area.
+      Οι γραμμές είναι οι παράγοντες του \((a-b)\), οι στήλες του \((a+b)\):
+    </p>
+
+    <div class="box-wrap">
+      <div class="bg bg2">
+        <div class="bc"></div>
+        <div class="bt">\(a\)</div>
+        <div class="bt">\(+b\)</div>
+
+        <div class="bl">\(a\)</div>
+        <div class="bv ca2">\(a^2\)<span class="cdim">\(a \times a\)</span></div>
+        <div class="bv cab">\(ab\)<span class="cdim">\(a \times b\)</span></div>
+
+        <div class="bl">\(-b\)</div>
+        <div class="bv cmab">\(-ab\)<span class="cdim">\((-b) \times a\)</span></div>
+        <div class="bv cmab">\(-b^2\)<span class="cdim">\((-b) \times b\)</span></div>
+      </div>
+      <span class="box-caption">\((a-b)(a+b)\) — τα \(ab\) αλληλοακυρώνονται</span>
+    </div>
+
+    <div class="sum-line">
+      Άθροισμα: \(a^2 + ab - ab - b^2 = a^2 - b^2\) &nbsp;✓
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════
+       §4  a³+b³
+  ════════════════════════════════ -->
+  <div class="section">
+    <h2><span class="snum">§4</span> Άθροισμα κύβων: \(a^3 + b^3\)</h2>
+
+    <div class="identity violet">
+      <div class="ilabel">Ταυτότητα</div>
+      \[a^3 + b^3 = (a+b)(a^2 - ab + b^2)\]
+    </div>
+
+    <p>
+      Πολλαπλασιάζουμε \((a+b)(a^2 - ab + b^2)\).
+      Γραμμές: παράγοντες του \((a+b)\) · Στήλες: παράγοντες του \((a^2 - ab + b^2)\):
+    </p>
+
+    <div class="box-wrap">
+      <div class="bg bg3">
+        <div class="bc"></div>
+        <div class="bt">\(a^2\)</div>
+        <div class="bt">\(-ab\)</div>
+        <div class="bt">\(b^2\)</div>
+
+        <div class="bl">\(a\)</div>
+        <div class="bv ca3">\(a^3\)<span class="cdim">\(a \cdot a^2\)</span></div>
+        <div class="bv cmab2">\(-a^2b\)<span class="cdim">\(a \cdot (-ab)\)</span></div>
+        <div class="bv cab2">\(ab^2\)<span class="cdim">\(a \cdot b^2\)</span></div>
+
+        <div class="bl">\(b\)</div>
+        <div class="bv ca2b">\(a^2b\)<span class="cdim">\(b \cdot a^2\)</span></div>
+        <div class="bv cmab">\(-ab^2\)<span class="cdim">\(b \cdot (-ab)\)</span></div>
+        <div class="bv cb3">\(b^3\)<span class="cdim">\(b \cdot b^2\)</span></div>
+      </div>
+      <span class="box-caption">Τα μεσαία ζεύγη αλληλοακυρώνονται</span>
+    </div>
+
+    <div class="sum-line">
+      Άθροισμα: \(a^3 + (-a^2b + a^2b) + (ab^2 - ab^2) + b^3 = a^3 + b^3\) &nbsp;✓
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════
+       §5  a³−b³
+  ════════════════════════════════ -->
+  <div class="section">
+    <h2><span class="snum">§5</span> Διαφορά κύβων: \(a^3 - b^3\)</h2>
+
+    <div class="identity green">
+      <div class="ilabel">Ταυτότητα</div>
+      \[a^3 - b^3 = (a-b)(a^2 + ab + b^2)\]
+    </div>
+
+    <p>
+      Πολλαπλασιάζουμε \((a-b)(a^2 + ab + b^2)\):
+    </p>
+
+    <div class="box-wrap">
+      <div class="bg bg3">
+        <div class="bc"></div>
+        <div class="bt">\(a^2\)</div>
+        <div class="bt">\(ab\)</div>
+        <div class="bt">\(b^2\)</div>
+
+        <div class="bl">\(a\)</div>
+        <div class="bv ca3">\(a^3\)<span class="cdim">\(a \cdot a^2\)</span></div>
+        <div class="bv ca2b">\(a^2b\)<span class="cdim">\(a \cdot ab\)</span></div>
+        <div class="bv cab2">\(ab^2\)<span class="cdim">\(a \cdot b^2\)</span></div>
+
+        <div class="bl">\(-b\)</div>
+        <div class="bv cmab2">\(-a^2b\)<span class="cdim">\((-b) \cdot a^2\)</span></div>
+        <div class="bv cmab">\(-ab^2\)<span class="cdim">\((-b) \cdot ab\)</span></div>
+        <div class="bv cmb3">\(-b^3\)<span class="cdim">\((-b) \cdot b^2\)</span></div>
+      </div>
+      <span class="box-caption">Τα μεσαία ζεύγη αλληλοακυρώνονται</span>
+    </div>
+
+    <div class="sum-line">
+      Άθροισμα: \(a^3 + (a^2b - a^2b) + (ab^2 - ab^2) - b^3 = a^3 - b^3\) &nbsp;✓
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════
+       §6  ΠΑΡΑΓΟΝΤΟΠΟΙΗΣΗ
+  ════════════════════════════════ -->
+  <div class="section">
+    <h2><span class="snum">§6</span> Παραγοντοποίηση τριωνύμου με Box</h2>
+
+    <div class="identity blue">
+      <div class="ilabel">Παράδειγμα</div>
+      \[3x^2 + 15x + 18 = 3(x+2)(x+3)\]
+    </div>
+
+    <p>
+      Το Box/Area δουλεύει και αντίστροφα: δίνεται το γινόμενο σε κάθε κελί
+      και ζητούνται οι παράγοντες (labels των γραμμών/στηλών).
+    </p>
+
+    <ul class="steps">
+      <li>
+        <span class="sn">01</span>
+        <span><strong>Μέγιστος Κοινός Διαιρέτης</strong> των \(3, 15, 18\) είναι \(3\).<br/>
+        Βγάζουμε τον εκτός: \(3(x^2 + 5x + 6)\).</span>
+      </li>
+      <li>
+        <span class="sn">02</span>
+        <span>Για το \(x^2 + 5x + 6\) ψάχνουμε δύο αριθμούς με
+        <strong>γινόμενο \(6\)</strong> και <strong>άθροισμα \(5\)</strong>.
+        Αυτοί είναι \(2\) και \(3\).</span>
+      </li>
+      <li>
+        <span class="sn">03</span>
+        <span>Γεμίζουμε το Box: \(x^2\) και \(6\) στη διαγώνιο,
+        \(3x\) και \(2x\) στα υπόλοιπα κελιά.</span>
+      </li>
+      <li>
+        <span class="sn">04</span>
+        <span>ΜΚΔ κάθε γραμμής και στήλης → παράγοντες.</span>
+      </li>
+    </ul>
+
+    <div class="box-wrap">
+      <div class="bg bg2">
+        <div class="bc"></div>
+        <div class="bt" style="color:var(--accent);">\(x\)</div>
+        <div class="bt" style="color:var(--accent);">\(+3\)</div>
+
+        <div class="bl" style="color:var(--violet);">\(x\)</div>
+        <div class="bv cf1">\(x^2\)<span class="cdim">\(x \times x\)</span></div>
+        <div class="bv cf2">\(3x\)<span class="cdim">\(x \times 3\)</span></div>
+
+        <div class="bl" style="color:var(--violet);">\(+2\)</div>
+        <div class="bv cf3">\(2x\)<span class="cdim">\(2 \times x\)</span></div>
+        <div class="bv cf4">\(6\)<span class="cdim">\(2 \times 3\)</span></div>
+      </div>
+      <span class="box-caption">ΜΚΔ γραμμών → \(x, 2\) &nbsp;|&nbsp; ΜΚΔ στηλών → \(x, 3\)</span>
+    </div>
 
     <div class="proof">
-      <div class="proof-row">
-        <span class="proof-label">Εμβαδά</span>
-        <span>$(a+b)^2 = a^2 + ab + ab + b^2$</span>
+      <div class="pr">
+        <span class="pr-l">Άθροισμα</span>
+        <span>\(x^2 + 3x + 2x + 6 = x^2 + 5x + 6\)</span>
       </div>
-      <div class="proof-row">
-        <span class="proof-label">Απλοποίηση</span>
-        <span>$(a+b)^2 = a^2 + 2ab + b^2 \quad \blacksquare$</span>
-      </div>
-    </div>
-
-    <h3>Ταυτότητα της διαφοράς — $(a-b)^2$</h3>
-
-    <p>
-      Αντικαθιστούμε $b \to -b$ στην παραπάνω ταυτότητα.
-      Το $(-b)^2 = b^2$ και το $2a(-b) = -2ab$, οπότε:
-    </p>
-
-    <div class="math-block">
-      $$(a - b)^2 \;=\; a^2 - 2ab + b^2$$
-    </div>
-
-    <h3>Αριθμητική επαλήθευση</h3>
-    <div class="verify-grid">
-      <div class="verify-box">
-        <div class="vlabel">$(a+b)^2$, $\;a=3,\; b=2$</div>
-        <p>$(3+2)^2 = 5^2 = 25$</p>
-        <p>$9 + 6 + 6 + 4 = 25$</p>
-        <p class="ok">✓ Σωστό</p>
-      </div>
-      <div class="verify-box">
-        <div class="vlabel">$(a-b)^2$, $\;a=5,\; b=2$</div>
-        <p>$(5-2)^2 = 3^2 = 9$</p>
-        <p>$25 - 20 + 4 = 9$</p>
-        <p class="ok">✓ Σωστό</p>
+      <div class="pr">
+        <span class="pr-l">Αποτέλεσμα</span>
+        <span>\(3x^2 + 15x + 18 = 3(x+2)(x+3) \;\blacksquare\)</span>
       </div>
     </div>
   </div>
 
 
-  <!-- ══════════════════════════════════════
-       §2  ΚΥΒΟΣ — (a+b)³
-  ══════════════════════════════════════ -->
+  <!-- ════════════════════════════════
+       §7  ΣΥΝΟΨΗ
+  ════════════════════════════════ -->
   <div class="section">
-    <h2><span class="sec-num">§2</span> Ταυτότητα κύβου — $(a+b)^3$</h2>
+    <h2><span class="snum">§7</span> Σύνοψη</h2>
 
-    <div class="theorem violet">
-      <div class="tlabel">Ταυτότητα</div>
-      $$(a+b)^3 \;=\; a^3 + 3a^2b + 3ab^2 + b^3$$
-    </div>
-
-    <p>
-      Επεκτείνουμε τη λογική στην τρίτη διάσταση.
-      Ένας κύβος με ακμή $a+b$ έχει όγκο $(a+b)^3$.
-      Χωρίζουμε κάθε ακμή σε $a$ και $b$,
-      οπότε ο κύβος σπάει σε $2^3 = 8$ μικρότερα παραλληλεπίπεδα.
-    </p>
-
-    <p>
-      Για να το δούμε επίπεδα, σκεφτόμαστε τον κύβο ως
-      <strong>δύο στρώσεις</strong> πάχους $a$ και $b$ αντίστοιχα.
-      Κάθε στρώση έχει τη δική της 2×2 τομή:
-    </p>
-
-    <h3>Στρώση Α — πάχος $a$ (πολλαπλασιασμός όλων επί $a$)</h3>
-    <p>
-      Η βάση της στρώσης είναι το ίδιο 2×2 τετράγωνο του §1.
-      Πολλαπλασιάζουμε κάθε εμβαδόν επί το ύψος $a$:
-    </p>
-
-    <div class="diagram-wrap">
-      <div class="box-layout box-layout-cube">
-        <div class="bc-corner"></div>
-        <div class="bc-top">$a$</div>
-        <div class="bc-top">$b$</div>
-
-        <div class="bc-left">$a$</div>
-        <div class="bc-cell c-a3">
-          $a^3$
-          <span class="dim">$a \times a \times a$</span>
-        </div>
-        <div class="bc-cell c-a2b">
-          $a^2b$
-          <span class="dim">$a \times b \times a$</span>
-        </div>
-
-        <div class="bc-left">$b$</div>
-        <div class="bc-cell c-a2b">
-          $a^2b$
-          <span class="dim">$b \times a \times a$</span>
-        </div>
-        <div class="bc-cell c-ab2">
-          $ab^2$
-          <span class="dim">$b \times b \times a$</span>
-        </div>
-      </div>
-      <p class="diagram-caption">Στρώση Α — ύψος $a$ · σύνολο: $a^3 + a^2b + a^2b + ab^2$</p>
-    </div>
-
-    <h3>Στρώση Β — πάχος $b$ (πολλαπλασιασμός όλων επί $b$)</h3>
-    <p>
-      Η ίδια βάση 2×2, πολλαπλασιασμένη αυτή τη φορά επί το ύψος $b$:
-    </p>
-
-    <div class="diagram-wrap">
-      <div class="box-layout box-layout-cube">
-        <div class="bc-corner"></div>
-        <div class="bc-top">$a$</div>
-        <div class="bc-top">$b$</div>
-
-        <div class="bc-left">$a$</div>
-        <div class="bc-cell c-a2b">
-          $a^2b$
-          <span class="dim">$a \times a \times b$</span>
-        </div>
-        <div class="bc-cell c-ab2">
-          $ab^2$
-          <span class="dim">$a \times b \times b$</span>
-        </div>
-
-        <div class="bc-left">$b$</div>
-        <div class="bc-cell c-ab2">
-          $ab^2$
-          <span class="dim">$b \times a \times b$</span>
-        </div>
-        <div class="bc-cell c-b3">
-          $b^3$
-          <span class="dim">$b \times b \times b$</span>
-        </div>
-      </div>
-      <p class="diagram-caption">Στρώση Β — ύψος $b$ · σύνολο: $a^2b + ab^2 + ab^2 + b^3$</p>
-    </div>
-
-    <div class="legend">
-      <div class="legend-item">
-        <div class="leg-dot" style="background:rgba(126,184,247,0.6)"></div>
-        $a^3$ — κύβος $a{\times}a{\times}a$ &thinsp;(×1)
-      </div>
-      <div class="legend-item">
-        <div class="leg-dot" style="background:rgba(200,169,110,0.6)"></div>
-        $a^2b$ — παραλληλεπίπεδο δύο πλευρών $a$ και μία $b$ &thinsp;(×3)
-      </div>
-      <div class="legend-item">
-        <div class="leg-dot" style="background:rgba(167,140,240,0.6)"></div>
-        $ab^2$ — παραλληλεπίπεδο μίας πλευράς $a$ και δύο $b$ &thinsp;(×3)
-      </div>
-      <div class="legend-item">
-        <div class="leg-dot" style="background:rgba(109,219,180,0.6)"></div>
-        $b^3$ — κύβος $b{\times}b{\times}b$ &thinsp;(×1)
-      </div>
-    </div>
-
-    <p>
-      Αθροίζουμε τους όγκους και των δύο στρώσεων:
-    </p>
-
-    <div class="proof">
-      <div class="proof-row">
-        <span class="proof-label">Στρώση Α</span>
-        <span>$a^3 + a^2b + a^2b + ab^2$</span>
-      </div>
-      <div class="proof-row">
-        <span class="proof-label">Στρώση Β</span>
-        <span>$a^2b + ab^2 + ab^2 + b^3$</span>
-      </div>
-      <div class="proof-row">
-        <span class="proof-label">Άθροισμα</span>
-        <span>$a^3 + 3a^2b + 3ab^2 + b^3 \quad \blacksquare$</span>
-      </div>
-    </div>
-
-    <h3>Ταυτότητα της διαφοράς — $(a-b)^3$</h3>
-
-    <p>
-      Αντικαθιστούμε $b \to -b$. Οι δυνάμεις του $-b$
-      εναλλάσσουν πρόσημο: $(-b)^1 = -b$, $(-b)^2 = +b^2$, $(-b)^3 = -b^3$:
-    </p>
-
-    <div class="math-block">
-      $$(a - b)^3 \;=\; a^3 - 3a^2b + 3ab^2 - b^3$$
-    </div>
-
-    <h3>Αριθμητική επαλήθευση</h3>
-    <div class="verify-grid">
-      <div class="verify-box">
-        <div class="vlabel">$(a+b)^3$, $\;a=2,\; b=1$</div>
-        <p>$(2+1)^3 = 3^3 = 27$</p>
-        <p>$8 + 12 + 6 + 1 = 27$</p>
-        <p class="ok">✓ Σωστό</p>
-      </div>
-      <div class="verify-box">
-        <div class="vlabel">$(a-b)^3$, $\;a=3,\; b=1$</div>
-        <p>$(3-1)^3 = 2^3 = 8$</p>
-        <p>$27 - 27 + 9 - 1 = 8$</p>
-        <p class="ok">✓ Σωστό</p>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- ══════════════════════════════════════
-       §3  ΣΥΝΟΨΗ
-  ══════════════════════════════════════ -->
-  <div class="section">
-    <h2><span class="sec-num">§3</span> Σύνοψη</h2>
-
-    <table class="summary">
+    <table class="sum-table">
       <thead>
         <tr>
           <th>Ταυτότητα</th>
-          <th>Αναπτυγμένη μορφή</th>
-          <th>Box Area ερμηνεία</th>
+          <th>Τύπος</th>
+          <th>Box ερμηνεία</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td class="td-id">$(a+b)^2$</td>
-          <td>$a^2 + 2ab + b^2$</td>
-          <td>4 κομμάτια τετραγώνου</td>
-        </tr>
-        <tr>
-          <td class="td-id">$(a-b)^2$</td>
-          <td>$a^2 - 2ab + b^2$</td>
-          <td>Τετράγωνο με αφαίρεση ορθογωνίων</td>
-        </tr>
-        <tr>
-          <td class="td-id">$(a+b)^3$</td>
-          <td>$a^3 + 3a^2b + 3ab^2 + b^3$</td>
-          <td>8 παραλληλεπίπεδα κύβου, 2 στρώσεις</td>
-        </tr>
-        <tr>
-          <td class="td-id">$(a-b)^3$</td>
-          <td>$a^3 - 3a^2b + 3ab^2 - b^3$</td>
-          <td>Κύβος με εναλλασσόμενα πρόσημα</td>
-        </tr>
+        <tr><td class="tid">\((a+b)^2\)</td><td>\(a^2 + 2ab + b^2\)</td><td>4 κελιά — 2×2</td></tr>
+        <tr><td class="tid">\((a-b)^2\)</td><td>\(a^2 - 2ab + b^2\)</td><td>\(b \to -b\) στο ίδιο box</td></tr>
+        <tr><td class="tid">\(a^2 - b^2\)</td><td>\((a-b)(a+b)\)</td><td>Ακύρωση \(ab\) — 2×2</td></tr>
+        <tr><td class="tid">\(a^3 + b^3\)</td><td>\((a+b)(a^2-ab+b^2)\)</td><td>Ακύρωση μεσαίων — 2×3</td></tr>
+        <tr><td class="tid">\(a^3 - b^3\)</td><td>\((a-b)(a^2+ab+b^2)\)</td><td>Ακύρωση μεσαίων — 2×3</td></tr>
+        <tr><td class="tid">Παραγοντοπ.</td><td>\(3(x+2)(x+3)\)</td><td>ΜΚΔ γραμμών/στηλών</td></tr>
       </tbody>
     </table>
 
     <div class="note">
-      Οι συντελεστές 1, 2, 1 και 1, 3, 3, 1 που εμφανίζονται εδώ
-      συνδέονται άμεσα με το Τρίγωνο του Pascal και το Διωνυμικό Θεώρημα,
-      τα οποία γενικεύουν αυτή τη μέθοδο για οποιαδήποτε δύναμη $n$.
+      Οι συντελεστές 1, 2, 1 και 1, 3, 3, 1 που εμφανίζονται στα τετράγωνα και τους κύβους
+      συνδέονται άμεσα με το Τρίγωνο του Πασκάλ και το Διωνυμικό Θεώρημα,
+      τα οποία γενικεύουν αυτή τη μέθοδο για οποιαδήποτε δύναμη \(n\).
     </div>
   </div>
 
   <!-- FOOTER -->
-  <div class="post-footer">
+  <div class="foot">
     <span>math / αλγεβρικές-ταυτότητες / box-area-identities.html</span>
     <span>09 Μαρτίου 2026</span>
   </div>
 
-</div><!-- /page-wrap -->
+</div>
 </body>
 </html>
