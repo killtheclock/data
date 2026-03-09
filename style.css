@@ -1,0 +1,589 @@
+/* ============================================================
+   ΕΠΙΣΤΗΜΟΝΙΚΕΣ ΣΗΜΕΙΩΣΕΙΣ — style.css
+   Dark academic theme · Greek + LaTeX support
+   ============================================================ */
+
+/* ── RESET & BASE ─────────────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ── DESIGN TOKENS ────────────────────────────────────────── */
+:root {
+  /* Background scale */
+  --bg:          #0b0c0f;
+  --surface:     #11131a;
+  --surface-2:   #171a23;
+  --surface-3:   #1e2130;
+
+  /* Borders */
+  --border:      #1f2333;
+  --border-2:    #2a2f44;
+  --border-3:    #363d58;
+
+  /* Text scale */
+  --text:        #dde1ee;
+  --text-mid:    #8a92b2;
+  --text-dim:    #4a5070;
+  --text-faint:  #272d42;
+
+  /* Category accent colours */
+  --math:        #7eb8f7;   /* cool blue     */
+  --physics:     #a78cf0;   /* violet        */
+  --chemistry:   #6ddbb4;   /* teal-green    */
+  --literature:  #f0a96e;   /* warm amber    */
+  --notes:       #e07898;   /* rose          */
+
+  /* Highlight */
+  --gold:        #c8a96e;
+
+  /* Typography */
+  --font-serif:  'Crimson Pro', 'GFS Didot', Georgia, serif;
+  --font-greek:  'GFS Didot', 'Crimson Pro', serif;
+  --font-mono:   'JetBrains Mono', 'Courier New', monospace;
+
+  /* Spacing */
+  --max-width:   1100px;
+  --gap:         20px;
+
+  /* Misc */
+  --radius:      4px;
+  --transition:  0.22s ease;
+}
+
+/* ── SCROLLBAR ────────────────────────────────────────────── */
+::-webkit-scrollbar               { width: 6px; height: 6px; }
+::-webkit-scrollbar-track         { background: var(--bg); }
+::-webkit-scrollbar-thumb         { background: var(--border-2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover   { background: var(--border-3); }
+
+/* ── BASE ─────────────────────────────────────────────────── */
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.7;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background canvas (animated dot field via JS) */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.45;
+}
+
+/* Top accent bar */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--math) 25%,
+    var(--physics) 50%,
+    var(--chemistry) 75%,
+    transparent 100%
+  );
+  z-index: 200;
+}
+
+/* ── HEADER ───────────────────────────────────────────────── */
+.site-header {
+  position: relative;
+  z-index: 10;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 56px 40px 36px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 40px;
+}
+
+.site-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+}
+
+.site-title {
+  font-family: var(--font-greek);
+  font-weight: normal;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.title-greek {
+  color: var(--text);
+}
+
+.title-amp {
+  color: var(--text-dim);
+  font-style: italic;
+  font-size: 0.7em;
+}
+
+.title-math {
+  color: var(--math);
+  font-size: 0.75em;
+}
+
+.site-sub {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--text-mid);
+  letter-spacing: 0.01em;
+}
+
+.header-right {
+  text-align: right;
+}
+
+.header-formula {
+  font-size: 1.3rem;
+  color: var(--gold);
+  opacity: 0.8;
+  padding: 16px 20px;
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+  border-radius: var(--radius);
+  min-width: 160px;
+}
+
+/* ── TAB BAR ──────────────────────────────────────────────── */
+.tab-bar {
+  position: relative;
+  z-index: 10;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.tab-bar-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tab-bar-inner::-webkit-scrollbar { display: none; }
+
+.tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 14px 16px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.tab:hover { color: var(--text-mid); }
+
+.tab.active {
+  color: var(--text);
+  border-bottom-color: var(--text-mid);
+}
+
+/* Category-specific active colours */
+.tab[data-cat="math"].active       { color: var(--math);       border-bottom-color: var(--math); }
+.tab[data-cat="physics"].active    { color: var(--physics);    border-bottom-color: var(--physics); }
+.tab[data-cat="chemistry"].active  { color: var(--chemistry);  border-bottom-color: var(--chemistry); }
+.tab[data-cat="literature"].active { color: var(--literature); border-bottom-color: var(--literature); }
+.tab[data-cat="notes"].active      { color: var(--notes);      border-bottom-color: var(--notes); }
+
+.tab-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.tab.active .tab-dot { opacity: 1; }
+
+.tab-count {
+  font-size: 0.55rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  color: var(--text-dim);
+  padding: 1px 7px;
+  border-radius: 20px;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* ── MAIN CONTENT ─────────────────────────────────────────── */
+.main-content {
+  position: relative;
+  z-index: 1;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 36px 40px 72px;
+}
+
+/* ── LOADING ──────────────────────────────────────────────── */
+.loading-state {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.loading-text {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+/* ── CARD GRID ────────────────────────────────────────────── */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: var(--gap);
+}
+
+/* ── CARD ─────────────────────────────────────────────────── */
+.card {
+  --accent: var(--text-mid);   /* overridden per category */
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 24px 18px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
+
+  /* stagger animation */
+  animation: cardIn 0.4s ease backwards;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Top colour stripe */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0.5;
+  transition: opacity var(--transition);
+}
+
+.card:hover {
+  border-color: var(--border-2);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+}
+
+.card:hover::before { opacity: 1; }
+
+/* Per-category accent override */
+.card[data-cat="math"]       { --accent: var(--math); }
+.card[data-cat="physics"]    { --accent: var(--physics); }
+.card[data-cat="chemistry"]  { --accent: var(--chemistry); }
+.card[data-cat="literature"] { --accent: var(--literature); }
+.card[data-cat="notes"]      { --accent: var(--notes); }
+
+/* Card parts */
+.card-tag {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+
+.card-title {
+  font-family: var(--font-greek);
+  font-weight: normal;
+  font-size: 1.15rem;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.card-formula {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--gold);
+  background: rgba(200,169,110,0.05);
+  border-left: 2px solid rgba(200,169,110,0.25);
+  padding: 8px 12px;
+  margin: 4px 0;
+  overflow-x: auto;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.card-desc {
+  font-family: var(--font-serif);
+  font-size: 0.88rem;
+  color: var(--text-mid);
+  line-height: 1.65;
+  flex: 1;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  margin-top: 4px;
+}
+
+.card-date {
+  font-family: var(--font-mono);
+  font-size: 0.57rem;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.card-arrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  opacity: 0.5;
+  transition: opacity var(--transition), transform var(--transition);
+}
+
+.card:hover .card-arrow {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+/* Hidden cards (filtered out) */
+.card.hidden { display: none; }
+
+/* ── EMPTY STATE ──────────────────────────────────────────── */
+.empty-state {
+  grid-column: 1 / -1;
+  padding: 80px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.empty-math {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 2.5rem;
+  color: var(--border-2);
+}
+
+.empty-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── FOOTER ───────────────────────────────────────────────── */
+.site-footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 36px 40px 48px;
+}
+
+.footer-title {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 28px;
+}
+
+.footer-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 28px;
+}
+
+.footer-step {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.step-num {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--border-2);
+  flex-shrink: 0;
+  width: 36px;
+}
+
+.footer-step div {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  line-height: 1.85;
+  color: var(--text-dim);
+}
+
+.footer-step strong {
+  display: block;
+  color: var(--text-mid);
+  font-size: 0.65rem;
+  margin-bottom: 3px;
+}
+
+.footer-step code {
+  background: var(--surface-3);
+  border: 1px solid var(--border-2);
+  color: var(--math);
+  padding: 1px 6px;
+  border-radius: 2px;
+  font-size: 0.58rem;
+}
+
+/* ── UTILITIES ────────────────────────────────────────────── */
+[hidden] { display: none !important; }
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .header-inner {
+    grid-template-columns: 1fr;
+    padding: 36px 20px 24px;
+  }
+  .header-right  { display: none; }
+  .tab-bar-inner { padding: 0 20px; }
+  .main-content  { padding: 24px 20px 48px; }
+  .footer-inner  { padding: 28px 20px 40px; }
+  .site-title    { font-size: 2.2rem; }
+}
+
+/* ── SUB-TAB BAR ──────────────────────────────────────────── */
+.subtab-bar {
+  position: relative;
+  z-index: 9;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  --subcat-accent: var(--text-mid);
+}
+
+.subtab-bar-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 40px;
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.subtab-bar-inner::-webkit-scrollbar { display: none; }
+
+.subtab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 10px 14px 8px;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.subtab:hover { color: var(--text-mid); }
+
+.subtab.active {
+  color: var(--subcat-accent);
+  border-bottom-color: var(--subcat-accent);
+}
+
+.subtab-count {
+  font-size: 0.52rem;
+  background: var(--surface-3);
+  border: 1px solid var(--border-2);
+  color: var(--text-dim);
+  padding: 1px 6px;
+  border-radius: 20px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Sub-label on card tag */
+.card-tag-sub {
+  color: var(--text-dim);
+  font-size: 0.9em;
+}
+
+@media (max-width: 700px) {
+  .subtab-bar-inner { padding: 0 20px; }
+}
