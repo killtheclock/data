@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Παραγοντοποίηση — Όλες οι Βασικές Μέθοδοι</title>
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath:  [['\\(','\\)']],
+        displayMath: [['\\[','\\]']]
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] },
+      startup: { typeset: true }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=GFS+Didot&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── RESET ── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+
+    /* ── TOKENS ── */
+    :root {
+      --bg:        #0b0c0f;
+      --surface:   #11131a;
+      --surface-2: #171a23;
+      --border:    #1f2333;
+      --border-2:  #2a2f44;
+      --text:      #dde1ee;
+      --text-mid:  #8a92b2;
+      --text-dim:  #4a5070;
+      --accent:    #7eb8f7;
+      --gold:      #c8a96e;
+      --green:     #6ddbb4;
+      --violet:    #a78cf0;
+      --rose:      #e07898;
+      --serif:     'Crimson Pro', 'GFS Didot', Georgia, serif;
+      --mono:      'JetBrains Mono', 'Courier New', monospace;
+    }
+
+    /* ── BASE ── */
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--serif);
+      font-size: 18px;
+      line-height: 1.85;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: radial-gradient(circle, #2a2f3e 1px, transparent 1px);
+      background-size: 28px 28px;
+      opacity: 0.25;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed; top:0; left:0; right:0; height:2px;
+      background: linear-gradient(90deg, transparent, var(--accent) 30%, var(--violet) 70%, transparent);
+      z-index: 200;
+    }
+
+    /* ── LAYOUT ── */
+    .wrap {
+      position: relative; z-index: 1;
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 0 36px 80px;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      padding: 28px 0 0;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .back {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.1em; text-decoration: none;
+      color: var(--text-dim); transition: color .2s;
+    }
+    .back:hover { color: var(--accent); }
+    .breadcrumb {
+      font-family: var(--mono); font-size: 0.58rem;
+      letter-spacing: 0.08em; color: var(--text-dim);
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 38px 0 30px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 52px;
+    }
+    .meta {
+      font-family: var(--mono); font-size: 0.6rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px;
+      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    }
+    .meta .sep { color: var(--border-2); }
+    .meta .date { color: var(--text-dim); }
+    h1 {
+      font-family: var(--serif); font-weight: 300;
+      font-size: clamp(1.9rem, 4.5vw, 2.9rem);
+      line-height: 1.1; letter-spacing: -.015em;
+      color: var(--text); margin-bottom: 12px;
+    }
+    h1 em { font-style: italic; color: var(--gold); }
+    .sub {
+      font-style: italic; color: var(--text-mid);
+      font-size: 1rem; line-height: 1.6;
+    }
+
+    /* ── METHOD CARD ── */
+    .method {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 4px 4px 0;
+      padding: 26px 28px;
+      margin-bottom: 28px;
+    }
+    .method.gold    { border-left-color: var(--gold); }
+    .method.green   { border-left-color: var(--green); }
+    .method.violet  { border-left-color: var(--violet); }
+    .method.rose    { border-left-color: var(--rose); }
+
+    /* method header */
+    .method-header {
+      display: flex; align-items: baseline;
+      gap: 14px; margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-2);
+    }
+    .method-num {
+      font-family: var(--mono); font-size: 0.58rem;
+      color: var(--accent); letter-spacing: 0.1em;
+      border: 1px solid var(--border-2);
+      padding: 2px 8px; border-radius: 2px; flex-shrink: 0;
+    }
+    .method.gold   .method-num { color: var(--gold); }
+    .method.green  .method-num { color: var(--green); }
+    .method.violet .method-num { color: var(--violet); }
+    .method.rose   .method-num { color: var(--rose); }
+
+    h2 {
+      font-family: var(--serif); font-weight: 400;
+      font-size: 1.25rem; color: var(--text);
+      line-height: 1.2;
+    }
+
+    p {
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+    p:last-child { margin-bottom: 0; }
+    b, strong { color: var(--text); font-weight: 600; }
+
+    /* ── MATH DISPLAY ── */
+    .mblock {
+      background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      border-left: 3px solid var(--gold);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.95rem;
+      padding: 10px 16px;
+      margin: 12px 0;
+      border-radius: 0 3px 3px 0;
+      display: block;
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+
+    /* ── STEP LIST ── */
+    .steps { list-style: none; margin: 10px 0 14px; }
+    .steps li {
+      display: flex; gap: 12px;
+      margin-bottom: 10px; align-items: flex-start;
+      color: var(--text);
+    }
+    .steps li .sn {
+      font-family: var(--mono); font-size: 0.55rem;
+      color: var(--accent); background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      padding: 2px 6px; border-radius: 2px;
+      flex-shrink: 0; margin-top: 4px;
+      letter-spacing: 0.06em;
+    }
+    .steps li p { margin: 0; }
+
+    /* ── BULLET LIST ── */
+    .blist { list-style: none; margin: 10px 0 14px; padding: 0; }
+    .blist li {
+      display: flex; gap: 10px;
+      margin-bottom: 8px; color: var(--text);
+      align-items: flex-start;
+    }
+    .blist li::before {
+      content: '—';
+      font-family: var(--mono); color: var(--text-dim);
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* ── RESULT LINE ── */
+    .result {
+      background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      border-left: 3px solid var(--green);
+      color: var(--green);
+      font-family: var(--mono); font-size: 0.95rem;
+      padding: 10px 16px; margin: 14px 0;
+      border-radius: 0 3px 3px 0;
+      display: block; overflow-x: auto;
+    }
+
+    /* ── NOTE ── */
+    .note {
+      background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      border-left: 3px solid var(--gold);
+      padding: 12px 16px; margin: 14px 0;
+      border-radius: 0 3px 3px 0;
+      font-style: italic; font-size: 0.92rem;
+      color: var(--text-mid); line-height: 1.65;
+    }
+
+    /* ── PINNED NOTE (άθροισμα τετραγώνων) ── */
+    .pinned {
+      background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      border-left: 3px solid var(--rose);
+      padding: 16px 20px; margin-top: 36px;
+      border-radius: 0 4px 4px 0;
+      color: var(--text-mid); font-size: 0.95rem;
+      line-height: 1.7;
+    }
+    .pinned strong { color: var(--rose); }
+
+    /* ── SUMMARY TABLE ── */
+    .sum-table {
+      width: 100%; border-collapse: collapse;
+      margin: 20px 0; font-size: 0.9rem;
+    }
+    .sum-table th {
+      font-family: var(--mono); font-size: 0.56rem;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text-dim); padding: 10px 14px;
+      border-bottom: 2px solid var(--border-2); text-align: left;
+      background: var(--surface-2);
+    }
+    .sum-table td {
+      padding: 10px 14px; border-bottom: 1px solid var(--border);
+      color: var(--text); background: var(--surface);
+      vertical-align: top; font-family: var(--mono); font-size: 0.85rem;
+    }
+    .sum-table tr:last-child td { border-bottom: none; }
+    .tid { color: var(--gold); white-space: nowrap; }
+
+    /* ── SECTION DIVIDER ── */
+    .divider {
+      font-family: var(--mono); font-size: 0.58rem;
+      text-transform: uppercase; letter-spacing: 0.14em;
+      color: var(--text-dim); margin: 48px 0 20px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .divider::after {
+      content: ''; flex: 1;
+      height: 1px; background: var(--border);
+    }
+
+    /* ── FOOTER ── */
+    .foot {
+      border-top: 1px solid var(--border);
+      padding: 20px 0 0; margin-top: 36px;
+      display: flex; justify-content: space-between;
+      flex-wrap: wrap; gap: 8px;
+    }
+    .foot span {
+      font-family: var(--mono); font-size: 0.55rem;
+      color: var(--text-dim); letter-spacing: 0.06em;
+    }
+
+    @media (max-width: 600px) {
+      .wrap { padding: 0 18px 60px; }
+      .method { padding: 20px 18px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <a class="back" href="../index.html">← index</a>
+    <span class="breadcrumb">math / αλγεβρικές ταυτότητες</span>
+  </div>
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <p class="meta">
+      <span>Μαθηματικά</span>
+      <span class="sep">/</span>
+      <span>Αλγεβρικές Ταυτότητες</span>
+      <span class="sep">·</span>
+      <span class="date">10 Μαρτίου 2026</span>
+    </p>
+    <h1>Παραγοντοποίηση<br/><em>Όλες οι Βασικές Μέθοδοι</em></h1>
+    <p class="sub">Δέκα μέθοδοι παραγοντοποίησης με αναλυτικά παραδείγματα και βήματα.</p>
+  </div>
+
+
+  <!-- ══ 1. Κοινός παράγοντας ══ -->
+  <div class="method">
+    <div class="method-header">
+      <span class="method-num">§1</span>
+      <h2>Κοινός παράγοντας</h2>
+    </div>
+    <p>Βρίσκουμε τον μεγαλύτερο κοινό παράγοντα (ΜΚΔ) όλων των όρων και τον βγάζουμε έξω.</p>
+    <p><strong>Παράδειγμα:</strong></p>
+    <span class="mblock">\(12x^3y - 18x^2y^2 + 6x^2y\)</span>
+    <p><strong>Βήμα 1</strong> — Ο ΜΚΔ των τριών όρων είναι \(6x^2y\):</p>
+    <span class="mblock">
+      \(12x^3y = 6x^2y \cdot 2x\)<br/>
+      \(18x^2y^2 = 6x^2y \cdot 3y\)<br/>
+      \(6x^2y = 6x^2y \cdot 1\)
+    </span>
+    <p><strong>Βήμα 2</strong> — Βγάζουμε τον ΜΚΔ έξω:</p>
+    <span class="result">\(12x^3y - 18x^2y^2 + 6x^2y = 6x^2y(2x - 3y + 1)\)</span>
+  </div>
+
+
+  <!-- ══ 2. Ομαδοποίηση ══ -->
+  <div class="method gold">
+    <div class="method-header">
+      <span class="method-num">§2</span>
+      <h2>Κοινός παράγοντας σε ομάδες (ομαδοποίηση)</h2>
+    </div>
+    <p>Ομαδοποιούμε όρους ώστε να εμφανιστεί κοινός παράγοντας σε κάθε ομάδα.</p>
+    <p><strong>Παράδειγμα:</strong></p>
+    <span class="mblock">\(3x^2 + 6xy + 2x + 4y\)</span>
+    <ul class="steps">
+      <li><span class="sn">01</span><p>Χωρίζουμε σε ομάδες: \((3x^2 + 6xy) + (2x + 4y)\)</p></li>
+      <li><span class="sn">02</span><p>Κοινός παράγοντας σε κάθε ομάδα: \(3x(x + 2y) + 2(x + 2y)\)</p></li>
+      <li><span class="sn">03</span><p>Εμφανίζεται κοινός παράγοντας \((x+2y)\):</p></li>
+    </ul>
+    <span class="result">\(3x^2 + 6xy + 2x + 4y = (3x + 2)(x + 2y)\)</span>
+  </div>
+
+
+  <!-- ══ 3. Διαφορά τετραγώνων ══ -->
+  <div class="method rose">
+    <div class="method-header">
+      <span class="method-num">§3</span>
+      <h2>Διαφορά τετραγώνων</h2>
+    </div>
+    <p>Τύπος: \(\alpha^2 - \beta^2 = (\alpha+\beta)(\alpha-\beta)\)</p>
+    <p><strong>Παράδειγμα:</strong></p>
+    <span class="mblock">\(9x^2 - 16y^2\)</span>
+    <p>Αναγνωρίζουμε τέλεια τετράγωνα:</p>
+    <span class="mblock">
+      \(9x^2 = (3x)^2 \qquad 16y^2 = (4y)^2\)
+    </span>
+    <span class="result">\(9x^2 - 16y^2 = (3x + 4y)(3x - 4y)\)</span>
+  </div>
+
+
+  <!-- ══ 4. Άθροισμα κύβων ══ -->
+  <div class="method violet">
+    <div class="method-header">
+      <span class="method-num">§4</span>
+      <h2>Άθροισμα κύβων</h2>
+    </div>
+    <p>Τύπος: \(\alpha^3 + \beta^3 = (\alpha+\beta)(\alpha^2 - \alpha\beta + \beta^2)\)</p>
+    <p><strong>Παράδειγμα:</strong></p>
+    <span class="mblock">\(8x^3 + 27\)</span>
+    <p>Γράφουμε ως τέλειοι κύβοι:</p>
+    <span class="mblock">
+      \(8x^3 = (2x)^3 \qquad 27 = 3^3\)
+    </span>
+    <p>Εφαρμόζουμε τον τύπο με \(\alpha = 2x\), \(\beta = 3\):</p>
+    <span class="result">\(8x^3 + 27 = (2x+3)(4x^2 - 6x + 9)\)</span>
+  </div>
+
+
+  <!-- ══ 5. Διαφορά κύβων ══ -->
+  <div class="method green">
+    <div class="method-header">
+      <span class="method-num">§5</span>
+      <h2>Διαφορά κύβων</h2>
+    </div>
+    <p>Τύπος: \(\alpha^3 - \beta^3 = (\alpha-\beta)(\alpha^2 + \alpha\beta + \beta^2)\)</p>
+    <p><strong>Παράδειγμα:</strong></p>
+    <span class="mblock">\(x^3 - 125\)</span>
+    <p>Γράφουμε: \(125 = 5^3\), άρα \(\alpha = x\), \(\beta = 5\):</p>
+    <span class="result">\(x^3 - 125 = (x-5)(x^2 + 5x + 25)\)</span>
+  </div>
+
+
+  <!-- ══ 6. Τέλειο τετράγωνο ══ -->
+  <div class="method">
+    <div class="method-header">
+      <span class="method-num">§6</span>
+      <h2>Τέλειο τετράγωνο</h2>
+    </div>
+    <p>Τύπος: \(\alpha^2 \pm 2\alpha\beta + \beta^2 = (\alpha \pm \beta)^2\)</p>
+    <p><strong>Παράδειγμα:</strong></p>
+    <span class="mblock">\(4x^2 + 12x + 9\)</span>
+    <p>Ελέγχουμε αν είναι τέλειο τετράγωνο:</p>
+    <span class="mblock">
+      \(4x^2 = (2x)^2 \qquad 9 = 3^2 \qquad 12x = 2 \cdot 2x \cdot 3\) ✓
+    </span>
+    <span class="result">\(4x^2 + 12x + 9 = (2x+3)^2\)</span>
+    <div class="note">
+      Αντίστοιχο με πλην: \(4x^2 - 12x + 9 = (2x-3)^2\)
+    </div>
+  </div>
+
+
+  <!-- ══ 7. Τριώνυμο x²+Sx+P ══ -->
+  <div class="method gold">
+    <div class="method-header">
+      <span class="method-num">§7</span>
+      <h2>Τριώνυμο \(x^2 + (\alpha+\beta)x + \alpha\beta\)</h2>
+    </div>
+    <p>Ψάχνουμε δύο αριθμούς \(\alpha, \beta\) τέτοιους ώστε \(\alpha+\beta = S\) και \(\alpha\cdot\beta = P\).</p>
+    <p><strong>Παράδειγμα:</strong></p>
+    <span class="mblock">\(x^2 + 11x + 24\)</span>
+    <p>Ψάχνουμε \(\alpha, \beta\) με:</p>
+    <ul class="blist">
+      <li>Άθροισμα \(\alpha + \beta = 11\)</li>
+      <li>Γινόμενο \(\alpha \cdot \beta = 24\)</li>
+    </ul>
+    <p>Οι αριθμοί είναι \(3\) και \(8\) &nbsp;(\(3+8=11\), \(3\cdot8=24\)).</p>
+    <span class="result">\(x^2 + 11x + 24 = (x+3)(x+8)\)</span>
+  </div>
+
+
+  <!-- ══ 8. ax²+bx+c ══ -->
+  <div class="method violet">
+    <div class="method-header">
+      <span class="method-num">§8</span>
+      <h2>Τριώνυμο \(ax^2 + bx + c\) &nbsp;(\(a \neq 1\))</h2>
+    </div>
+    <p>Χρησιμοποιούμε πολλαπλασιασμό ακραίων + ομαδοποίηση.</p>
+    <p><strong>Παράδειγμα:</strong></p>
+    <span class="mblock">\(2x^2 + 5x - 3\)</span>
+    <ul class="steps">
+      <li><span class="sn">01</span><p>Πολλαπλασιάζουμε ακραίους: \(2 \cdot (-3) = -6\).</p></li>
+      <li><span class="sn">02</span><p>Ψάχνουμε \(\alpha, \beta\) με γινόμενο \(-6\) και άθροισμα \(+5\): οι αριθμοί είναι \(6\) και \(-1\).</p></li>
+      <li><span class="sn">03</span><p>Αναλύουμε τον μεσαίο όρο: \(5x = 6x - x\).</p></li>
+      <li><span class="sn">04</span><p>Ομαδοποιούμε: \((2x^2 + 6x) + (-x - 3)\)</p></li>
+      <li><span class="sn">05</span><p>Κοινός παράγοντας σε κάθε ομάδα: \(2x(x+3) - 1(x+3)\)</p></li>
+      <li><span class="sn">06</span><p>Κοινός παράγοντας \((x+3)\):</p></li>
+    </ul>
+    <span class="result">\(2x^2 + 5x - 3 = (2x-1)(x+3)\)</span>
+    <div class="note">
+      Αυτή η μέθοδος λειτουργεί για κάθε τριώνυμο με \(a \neq 1\).
+      Εναλλακτικά μπορούμε να βρούμε ρίζες με διακρίνουσα \(\Delta = b^2 - 4ac\).
+    </div>
+  </div>
+
+
+  <!-- ══ 9. Συνδυασμός μεθόδων ══ -->
+  <div class="method green">
+    <div class="method-header">
+      <span class="method-num">§9</span>
+      <h2>Συνδυασμός μεθόδων (ομαδοποίηση + ταυτότητες)</h2>
+    </div>
+    <p>Μερικές φορές χρειάζεται να συνδυάσουμε παραπάνω από μία μέθοδο.</p>
+    <p><strong>Παράδειγμα:</strong></p>
+    <span class="mblock">\(x^3 + 3x^2 - 4x - 12\)</span>
+    <ul class="steps">
+      <li><span class="sn">01</span><p>Ομαδοποίηση: \((x^3 + 3x^2) + (-4x - 12)\)</p></li>
+      <li><span class="sn">02</span><p>Κοινός παράγοντας σε κάθε ομάδα: \(x^2(x+3) - 4(x+3)\)</p></li>
+      <li><span class="sn">03</span><p>Κοινός παράγοντας \((x+3)\): \((x+3)(x^2-4)\)</p></li>
+      <li><span class="sn">04</span><p>Το \(x^2-4\) είναι διαφορά τετραγώνων (§3): \((x+3)(x-2)(x+2)\)</p></li>
+    </ul>
+    <span class="result">\(x^3 + 3x^2 - 4x - 12 = (x+3)(x-2)(x+2)\)</span>
+  </div>
+
+
+  <!-- ══ 10. Αντικατάσταση / Διτετράγωνο ══ -->
+  <div class="method rose">
+    <div class="method-header">
+      <span class="method-num">§10</span>
+      <h2>Παραγοντοποίηση με αντικατάσταση (διτετράγωνο)</h2>
+    </div>
+    <p>Όταν η έκφραση είναι τετράγωνο ως προς \(x^2\), θέτουμε \(\omega = x^2\) για απλοποίηση.</p>
+    <p><strong>Παράδειγμα:</strong></p>
+    <span class="mblock">\(x^4 - 5x^2 + 4\)</span>
+    <ul class="steps">
+      <li><span class="sn">01</span><p>Θέτουμε \(\omega = x^2\): \(\quad \omega^2 - 5\omega + 4\)</p></li>
+      <li><span class="sn">02</span><p>Παραγοντοποιούμε ως τριώνυμο (§7): \((\omega-1)(\omega-4)\)</p></li>
+      <li><span class="sn">03</span><p>Επαναφέρουμε \(x\): \((x^2-1)(x^2-4)\)</p></li>
+      <li><span class="sn">04</span><p>Και τα δύο είναι διαφορές τετραγώνων (§3):</p></li>
+    </ul>
+    <span class="result">\(x^4 - 5x^2 + 4 = (x-1)(x+1)(x-2)(x+2)\)</span>
+  </div>
+
+
+  <!-- ══ ΠΙΝΑΚΙΔΑ ══ -->
+  <div class="pinned">
+    <strong>📌 Σημείωση:</strong>
+    Το <strong>άθροισμα τετραγώνων</strong> (π.χ. \(x^2 + 9\)) <em>δεν παραγοντοποιείται</em>
+    στο σύνολο των πραγματικών αριθμών.
+    Στο μιγαδικό πεδίο παραγοντοποιείται, αλλά ξεφεύγει από τη σχολική ύλη.
+  </div>
+
+
+  <!-- ══ ΣΥΝΟΨΗ ══ -->
+  <p class="divider">Σύνοψη μεθόδων</p>
+
+  <table class="sum-table">
+    <thead>
+      <tr>
+        <th>§</th>
+        <th>Μέθοδος</th>
+        <th>Τύπος / Κλειδί</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="tid">1</td><td>Κοινός παράγοντας</td><td>ΜΚΔ όλων των όρων</td></tr>
+      <tr><td class="tid">2</td><td>Ομαδοποίηση</td><td>Κοινός παράγοντας ανά ζεύγος</td></tr>
+      <tr><td class="tid">3</td><td>Διαφορά τετραγώνων</td><td>\(\alpha^2-\beta^2=(\alpha+\beta)(\alpha-\beta)\)</td></tr>
+      <tr><td class="tid">4</td><td>Άθροισμα κύβων</td><td>\(\alpha^3+\beta^3=(\alpha+\beta)(\alpha^2-\alpha\beta+\beta^2)\)</td></tr>
+      <tr><td class="tid">5</td><td>Διαφορά κύβων</td><td>\(\alpha^3-\beta^3=(\alpha-\beta)(\alpha^2+\alpha\beta+\beta^2)\)</td></tr>
+      <tr><td class="tid">6</td><td>Τέλειο τετράγωνο</td><td>\(\alpha^2\pm2\alpha\beta+\beta^2=(\alpha\pm\beta)^2\)</td></tr>
+      <tr><td class="tid">7</td><td>Τριώνυμο \(x^2+Sx+P\)</td><td>Δύο αριθμοί: άθροισμα \(S\), γινόμενο \(P\)</td></tr>
+      <tr><td class="tid">8</td><td>Τριώνυμο \(ax^2+bx+c\)</td><td>Πολλ. ακραίων + ομαδοποίηση</td></tr>
+      <tr><td class="tid">9</td><td>Συνδυασμός μεθόδων</td><td>Ομαδοποίηση + ταυτότητες</td></tr>
+      <tr><td class="tid">10</td><td>Αντικατάσταση</td><td>\(\omega=x^2\) → τριώνυμο → επαναφορά</td></tr>
+    </tbody>
+  </table>
+
+
+  <!-- FOOTER -->
+  <div class="foot">
+    <span>math / αλγεβρικές-ταυτότητες / factoring-methods.html</span>
+    <span>10 Μαρτίου 2026</span>
+  </div>
+
+</div>
+</body>
+</html>
