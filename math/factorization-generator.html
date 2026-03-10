@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Γεννήτρια Παραγοντοποίησης</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&family=GFS+Didot&display=swap" rel="stylesheet">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] },
+  startup: { typeset: true }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0b0c0f;
+    --surface: #11131a;
+    --surface2: #181b25;
+    --text: #dde1ee;
+    --muted: #7a8099;
+    --accent: #7eb8f7;
+    --gold: #c8a96e;
+    --green: #7ecf9f;
+    --red: #e07e7e;
+    --border: #1f2333;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 18px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* dot grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, #2a2f45 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* top gradient bar */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--accent), var(--green));
+    z-index: 100;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+
+  header h1 {
+    font-family: 'GFS Didot', serif;
+    font-size: 2.6rem;
+    font-weight: 400;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+    margin-bottom: 8px;
+  }
+
+  header p {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 1rem;
+  }
+
+  /* Method selector */
+  .method-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 28px;
+  }
+
+  .method-bar h2 {
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .method-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .method-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .method-pill:hover { border-color: var(--accent); color: var(--accent); }
+  .method-pill.active { background: var(--accent); color: #0b0c0f; border-color: var(--accent); font-weight: 500; }
+  .method-pill.random-active { background: var(--gold); color: #0b0c0f; border-color: var(--gold); }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    flex: 1;
+    min-width: 160px;
+    padding: 14px 24px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0b0c0f;
+  }
+  .btn-primary:hover { background: #9ecbf9; transform: translateY(-1px); }
+
+  .btn-solution {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+  }
+  .btn-solution:hover { background: var(--gold); color: #0b0c0f; }
+  .btn-solution:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* Exercise card */
+  .exercise-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 36px;
+    margin-bottom: 24px;
+    min-height: 120px;
+    position: relative;
+    transition: border-color 0.3s;
+  }
+
+  .exercise-card.has-content { border-color: #2a3050; }
+
+  .exercise-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .type-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: var(--surface2);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .counter-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  .exercise-prompt {
+    font-size: 1.05rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  .exercise-expr {
+    font-size: 1.6rem;
+    text-align: center;
+    padding: 20px;
+    background: var(--surface2);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    letter-spacing: 0.02em;
+  }
+
+  /* Progress tracker */
+  .progress-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .prog-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    transition: background 0.3s;
+  }
+  .prog-dot.shown { background: var(--accent); border-color: var(--accent); }
+
+  /* Solution card */
+  .solution-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px;
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .solution-card.visible { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .solution-card h3 {
+    font-family: 'GFS Didot', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    margin-bottom: 20px;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+  }
+
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 18px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 2px 8px;
+    margin-top: 3px;
+    flex-shrink: 0;
+    letter-spacing: 0.05em;
+  }
+
+  .step-content {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .step-content .math-block {
+    background: var(--surface2);
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin: 8px 0;
+    border-left: 2px solid var(--gold);
+    font-size: 1.1rem;
+  }
+
+  .answer-box {
+    background: var(--surface2);
+    border: 1px solid var(--green);
+    border-radius: 8px;
+    padding: 16px 24px;
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .answer-box .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--green);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .answer-box .result {
+    font-size: 1.5rem;
+  }
+
+  /* Stats row */
+  .stats-row {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .stat-box {
+    flex: 1;
+    min-width: 120px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .stat-box .val {
+    font-family: 'GFS Didot', serif;
+    font-size: 1.8rem;
+    color: var(--accent);
+  }
+
+  .stat-box .lbl {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--muted);
+    font-style: italic;
+    padding: 40px 0;
+    font-size: 1rem;
+  }
+
+  /* Method description tooltip */
+  .method-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-top: 10px;
+    min-height: 22px;
+    transition: color 0.2s;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Παραγοντοποίηση Πολυωνύμων</h1>
+    <p>Γεννήτρια ασκήσεων · 10 μέθοδοι · τυχαία εναλλαγή</p>
+  </header>
+
+  <!-- Method selector -->
+  <div class="method-bar">
+    <h2>Επιλογή μεθόδου</h2>
+    <div class="method-grid" id="methodGrid"></div>
+    <div class="method-desc" id="methodDesc">Επέλεξε μέθοδο ή άφησε τυχαία εναλλαγή</div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-row" id="progressRow"></div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button class="btn btn-primary" id="btnNew">▶ Νέα Άσκηση</button>
+    <button class="btn btn-solution" id="btnSolution" disabled>⟡ Εμφάνιση Λύσης</button>
+  </div>
+
+  <!-- Exercise -->
+  <div class="exercise-card" id="exerciseCard">
+    <div class="empty-state">Πάτα «Νέα Άσκηση» για να ξεκινήσεις</div>
+  </div>
+
+  <!-- Solution -->
+  <div class="solution-card" id="solutionCard">
+    <h3>⟡ Λύση βήμα-βήμα</h3>
+    <div id="solutionContent"></div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-box"><div class="val" id="statTotal">0</div><div class="lbl">Ασκήσεις</div></div>
+    <div class="stat-box"><div class="val" id="statSeen">0</div><div class="lbl">Λύσεις εμφανίστηκαν</div></div>
+    <div class="stat-box"><div class="val" id="statTypes">0</div><div class="lbl">Διαφορετικοί τύποι</div></div>
+  </div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// Utilities
+// ─────────────────────────────────────────────
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randNonZero(min, max) {
+  let v; do { v = randInt(min, max); } while (v === 0); return v;
+}
+function choice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function signStr(n, leading = false) {
+  if (n >= 0) return leading ? `${n}` : `+ ${n}`;
+  return `- ${Math.abs(n)}`;
+}
+
+function termStr(coef, varStr) {
+  if (coef === 0) return '';
+  if (coef === 1) return varStr;
+  if (coef === -1) return `-${varStr}`;
+  return `${coef}${varStr}`;
+}
+
+function poly(terms) {
+  // terms: array of {c, v} where v is the variable string ('x^2','x','')
+  let parts = [];
+  terms.forEach((t, i) => {
+    if (t.c === 0) return;
+    const s = termStr(Math.abs(t.c), t.v || '');
+    if (i === 0) {
+      parts.push(t.c < 0 ? `-${s}` : s);
+    } else {
+      parts.push(t.c < 0 ? `- ${s}` : `+ ${s}`);
+    }
+  });
+  return parts.join(' ') || '0';
+}
+
+// ─────────────────────────────────────────────
+// 10 Factorization Methods
+// ─────────────────────────────────────────────
+const METHODS = [
+  {
+    id: 1,
+    label: '1. Κοινός παράγοντας',
+    short: 'κοιν. παρ.',
+    desc: 'Εξαγωγή κοινού παράγοντα από όλους τους όρους',
+    generate() {
+      const a = randNonZero(2, 9);
+      const b = randNonZero(1, 8);
+      const c = randNonZero(1, 8);
+      const expr = `${a}x^2 ${signStr(a*b)} x`;
+      const factored = `${a}x(x ${signStr(b)})`;
+      // steps
+      const steps = [
+        { t: 'Εντοπίζουμε τον κοινό παράγοντα', m: `\\text{Κοινός παράγοντας: }${a}x` },
+        { t: 'Διαιρούμε κάθε όρο', m: `\\frac{${a}x^2}{${a}x} = x, \\quad \\frac{${a*b}x}{${a}x} = ${b}` },
+        { t: 'Αποτέλεσμα', m: `${a}x^2 ${signStr(a*b)}x = ${factored}` },
+      ];
+      return { expr, factored, steps };
+    }
+  },
+  {
+    id: 2,
+    label: '2. Τετράγωνο αθροίσματος',
+    short: 'τετρ. αθρ.',
+    desc: '(α + β)² = α² + 2αβ + β²',
+    generate() {
+      const a = randNonZero(1, 8);
+      const b = randNonZero(1, 8);
+      const a2 = a*a, b2 = b*b, ab2 = 2*a*b;
+      const expr = `x^2 + ${ab2}x + ${b2}`;
+      const factored = `(x + ${b})^2`;
+      const steps = [
+        { t: 'Ελέγχουμε τη μορφή α² + 2αβ + β²', m: `\\alpha = x,\\; \\beta = ${b}` },
+        { t: 'Επαλήθευση: 2αβ = ?', m: `2 \\cdot x \\cdot ${b} = ${ab2}x \\checkmark` },
+        { t: 'Παραγοντοποίηση', m: `x^2 + ${ab2}x + ${b2} = (x + ${b})^2` },
+      ];
+      return { expr, factored, steps };
+    }
+  },
+  {
+    id: 3,
+    label: '3. Τετράγωνο διαφοράς',
+    short: 'τετρ. διαφ.',
+    desc: '(α − β)² = α² − 2αβ + β²',
+    generate() {
+      const b = randNonZero(1, 8);
+      const b2 = b*b, ab2 = 2*b;
+      const expr = `x^2 - ${ab2}x + ${b2}`;
+      const factored = `(x - ${b})^2`;
+      const steps = [
+        { t: 'Ελέγχουμε τη μορφή α² − 2αβ + β²', m: `\\alpha = x,\\; \\beta = ${b}` },
+        { t: 'Επαλήθευση: 2αβ = ?', m: `2 \\cdot x \\cdot ${b} = ${ab2}x \\checkmark` },
+        { t: 'Παραγοντοποίηση', m: `x^2 - ${ab2}x + ${b2} = (x - ${b})^2` },
+      ];
+      return { expr, factored, steps };
+    }
+  },
+  {
+    id: 4,
+    label: '4. Διαφορά τετραγώνων',
+    short: 'α² − β²',
+    desc: 'α² − β² = (α + β)(α − β)',
+    generate() {
+      const b = randNonZero(2, 9);
+      const b2 = b*b;
+      const expr = `x^2 - ${b2}`;
+      const factored = `(x + ${b})(x - ${b})`;
+      const steps = [
+        { t: 'Αναγνώριση μορφής α² − β²', m: `x^2 - ${b2} = x^2 - ${b}^2` },
+        { t: 'Εφαρμογή ταυτότητας', m: `(\\alpha+\\beta)(\\alpha-\\beta) \\text{ με } \\alpha=x,\\;\\beta=${b}` },
+        { t: 'Αποτέλεσμα', m: `x^2 - ${b2} = (x+${b})(x-${b})` },
+      ];
+      return { expr, factored, steps };
+    }
+  },
+  {
+    id: 5,
+    label: '5. Άθροισμα κύβων',
+    short: 'α³ + β³',
+    desc: 'α³ + β³ = (α + β)(α² − αβ + β²)',
+    generate() {
+      const b = randNonZero(1, 5);
+      const b3 = b*b*b, b2 = b*b;
+      const expr = `x^3 + ${b3}`;
+      const factored = `(x + ${b})(x^2 - ${b}x + ${b2})`;
+      const steps = [
+        { t: 'Αναγνώριση: α³ + β³', m: `x^3 + ${b3} = x^3 + ${b}^3` },
+        { t: 'Ταυτότητα κύβων', m: `(\\alpha+\\beta)(\\alpha^2 - \\alpha\\beta + \\beta^2)` },
+        { t: 'Αντικατάσταση', m: `\\alpha=x,\\;\\beta=${b}` },
+        { t: 'Αποτέλεσμα', m: `(x+${b})(x^2 - ${b}x + ${b2})` },
+      ];
+      return { expr, factored, steps };
+    }
+  },
+  {
+    id: 6,
+    label: '6. Διαφορά κύβων',
+    short: 'α³ − β³',
+    desc: 'α³ − β³ = (α − β)(α² + αβ + β²)',
+    generate() {
+      const b = randNonZero(1, 5);
+      const b3 = b*b*b, b2 = b*b;
+      const expr = `x^3 - ${b3}`;
+      const factored = `(x - ${b})(x^2 + ${b}x + ${b2})`;
+      const steps = [
+        { t: 'Αναγνώριση: α³ − β³', m: `x^3 - ${b3} = x^3 - ${b}^3` },
+        { t: 'Ταυτότητα κύβων', m: `(\\alpha-\\beta)(\\alpha^2 + \\alpha\\beta + \\beta^2)` },
+        { t: 'Αντικατάσταση', m: `\\alpha=x,\\;\\beta=${b}` },
+        { t: 'Αποτέλεσμα', m: `(x-${b})(x^2 + ${b}x + ${b2})` },
+      ];
+      return { expr, factored, steps };
+    }
+  },
+  {
+    id: 7,
+    label: '7. Τριώνυμο (α=1)',
+    short: 'x²+bx+c',
+    desc: 'x² + bx + c = (x + r)(x + s) με r·s=c, r+s=b',
+    generate() {
+      const r = randNonZero(-7, 7);
+      let s; do { s = randNonZero(-7, 7); } while (s === r);
+      const b = r + s, c = r * s;
+      const bStr = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+      const cStr = c >= 0 ? `+ ${c}` : `- ${Math.abs(c)}`;
+      const expr = `x^2 ${bStr}x ${cStr}`;
+      const r1 = r >= 0 ? `+ ${r}` : `- ${Math.abs(r)}`;
+      const r2 = s >= 0 ? `+ ${s}` : `- ${Math.abs(s)}`;
+      const factored = `(x ${r1})(x ${r2})`;
+      const steps = [
+        { t: 'Ψάχνουμε r, s ώστε r+s = b και r·s = c', m: `r + s = ${b},\\quad r \\cdot s = ${c}` },
+        { t: 'Δοκιμάζουμε ζεύγη παραγόντων του ' + c, m: `r = ${r},\\;s = ${s} \\Rightarrow ${r}+${s}=${b}\\checkmark` },
+        { t: 'Παραγοντοποίηση', m: `x^2 ${bStr}x ${cStr} = (x${r >= 0 ? '+' : ''}${r})(x${s >= 0 ? '+' : ''}${s})` },
+      ];
+      return { expr, factored, steps };
+    }
+  },
+  {
+    id: 8,
+    label: '8. Τριώνυμο (α≠1)',
+    short: 'ax²+bx+c',
+    desc: 'ax² + bx + c — μέθοδος Δ ή διάσπαση μέλους',
+    generate() {
+      const a = choice([2, 3, 4, 5, 6]);
+      const r = randNonZero(-5, 5);
+      let s; do { s = randNonZero(-5, 5); } while (s === r);
+      // (ax + r)(x + s) => ax^2 + (as+r)x + rs
+      const b = a * s + r, c = r * s;
+      const bStr = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+      const cStr = c >= 0 ? `+ ${c}` : `- ${Math.abs(c)}`;
+      const expr = `${a}x^2 ${bStr}x ${cStr}`;
+      const r1 = r >= 0 ? `+${r}` : `${r}`;
+      const s1 = s >= 0 ? `+${s}` : `${s}`;
+      const factored = `(${a}x ${r >= 0 ? '+' : ''}${r})(x ${s >= 0 ? '+' : ''}${s})`;
+      const Delta = b*b - 4*a*c;
+      const steps = [
+        { t: 'Υπολογισμός διακρίνουσας Δ = b² − 4ac', m: `\\Delta = ${b}^2 - 4\\cdot${a}\\cdot${c} = ${Delta}` },
+        { t: 'Ρίζες', m: `x_{1,2} = \\frac{-${b} \\pm \\sqrt{${Delta}}}{2\\cdot${a}}` },
+        { t: `x₁ = ${r}, x₂ = ${s} — Παραγοντοποίηση`, m: `${a}(x - ${r})(x - ${s}) = ${factored}` },
+      ];
+      return { expr, factored, steps };
+    }
+  },
+  {
+    id: 9,
+    label: '9. Ομαδοποίηση',
+    short: 'ομαδοπ.',
+    desc: 'Ομαδοποίηση όρων για ανάδειξη κοινού παράγοντα',
+    generate() {
+      const a = randNonZero(2, 7);
+      const b = randNonZero(2, 7);
+      const c = randNonZero(2, 7);
+      // a*b*x^3 + a*c*x^2 + b^2*x + b*c = (ax^2+b)(bx+c)
+      // simpler: ax^3 + bx^2 + ax + b = x^2(ax+b) + (ax+b) = (x^2+1)(ax+b)
+      const expr = `${a}x^3 + ${b}x^2 + ${a}x + ${b}`;
+      const factored = `(x^2 + 1)(${a}x + ${b})`;
+      const steps = [
+        { t: 'Ομαδοποιούμε ανά δύο', m: `(${a}x^3 + ${b}x^2) + (${a}x + ${b})` },
+        { t: 'Εξάγουμε κοινό παράγοντα σε κάθε ομάδα', m: `x^2(${a}x + ${b}) + 1\\cdot(${a}x + ${b})` },
+        { t: 'Κοινός παράγοντας (${a}x + ${b})', m: `(x^2 + 1)(${a}x + ${b})` },
+      ];
+      return { expr, factored, steps };
+    }
+  },
+  {
+    id: 10,
+    label: '10. Σύνθετη μορφή',
+    short: 'σύνθετη',
+    desc: 'Συνδυασμός κοινού παράγοντα + ταυτότητας',
+    generate() {
+      const k = randNonZero(2, 6);
+      const b = randNonZero(2, 7);
+      const b2 = b*b;
+      // k(x^2 - b^2) = k(x+b)(x-b)
+      const expr = `${k}x^2 - ${k*b2}`;
+      const factored = `${k}(x + ${b})(x - ${b})`;
+      const steps = [
+        { t: 'Εξαγωγή κοινού παράγοντα', m: `${k}x^2 - ${k*b2} = ${k}(x^2 - ${b2})` },
+        { t: 'Αναγνώριση διαφοράς τετραγώνων', m: `x^2 - ${b2} = x^2 - ${b}^2` },
+        { t: 'Τελική παραγοντοποίηση', m: `${k}(x+${b})(x-${b})` },
+      ];
+      return { expr, factored, steps };
+    }
+  }
+];
+
+// ─────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────
+let state = {
+  selectedMethod: null,   // null = random
+  queue: [],              // fair shuffle queue
+  current: null,          // {methodId, expr, factored, steps}
+  stats: { total: 0, seenSolutions: 0, typesSeen: new Set() },
+  history: []             // last 20 method ids for progress dots
+};
+
+// ─────────────────────────────────────────────
+// Fair shuffle queue
+// ─────────────────────────────────────────────
+function nextMethod() {
+  if (state.selectedMethod !== null) {
+    return METHODS.find(m => m.id === state.selectedMethod);
+  }
+  if (state.queue.length === 0) {
+    state.queue = shuffle([...METHODS]);
+  }
+  return state.queue.pop();
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// ─────────────────────────────────────────────
+// Build UI
+// ─────────────────────────────────────────────
+function buildMethodGrid() {
+  const grid = document.getElementById('methodGrid');
+  // Random pill
+  const rp = document.createElement('div');
+  rp.className = 'method-pill random-active';
+  rp.textContent = '⟳ Τυχαία';
+  rp.dataset.id = '0';
+  rp.addEventListener('click', () => selectMethod(null));
+  grid.appendChild(rp);
+
+  METHODS.forEach(m => {
+    const pill = document.createElement('div');
+    pill.className = 'method-pill';
+    pill.textContent = m.short;
+    pill.dataset.id = m.id;
+    pill.addEventListener('click', () => selectMethod(m.id));
+    pill.addEventListener('mouseenter', () => {
+      document.getElementById('methodDesc').textContent = m.desc;
+    });
+    pill.addEventListener('mouseleave', () => {
+      const sel = state.selectedMethod;
+      if (sel) {
+        document.getElementById('methodDesc').textContent = METHODS.find(x=>x.id===sel).desc;
+      } else {
+        document.getElementById('methodDesc').textContent = 'Επέλεξε μέθοδο ή άφησε τυχαία εναλλαγή';
+      }
+    });
+    grid.appendChild(pill);
+  });
+}
+
+function selectMethod(id) {
+  state.selectedMethod = id;
+  state.queue = [];
+  document.querySelectorAll('.method-pill').forEach(p => {
+    p.classList.remove('active', 'random-active');
+    const pid = parseInt(p.dataset.id);
+    if (id === null && pid === 0) p.classList.add('random-active');
+    if (id !== null && pid === id) p.classList.add('active');
+    if (id === null && pid !== 0) {}
+  });
+  if (id !== null) {
+    const m = METHODS.find(m => m.id === id);
+    document.getElementById('methodDesc').textContent = m.desc;
+  } else {
+    document.getElementById('methodDesc').textContent = 'Επέλεξε μέθοδο ή άφησε τυχαία εναλλαγή';
+  }
+}
+
+function buildProgressDots() {
+  const row = document.getElementById('progressRow');
+  row.innerHTML = '';
+  const last = state.history.slice(-30);
+  last.forEach((mid, i) => {
+    const d = document.createElement('div');
+    d.className = 'prog-dot shown';
+    d.title = METHODS.find(m => m.id === mid)?.short || '';
+    row.appendChild(d);
+  });
+}
+
+// ─────────────────────────────────────────────
+// Generate exercise
+// ─────────────────────────────────────────────
+function generateExercise() {
+  const method = nextMethod();
+  const data = method.generate();
+  state.current = { methodId: method.id, method, ...data };
+  state.stats.total++;
+  state.stats.typesSeen.add(method.id);
+  state.history.push(method.id);
+
+  // Update exercise card
+  const card = document.getElementById('exerciseCard');
+  card.className = 'exercise-card has-content';
+  card.innerHTML = `
+    <div class="exercise-meta">
+      <span class="type-badge">${method.short}</span>
+      <span class="counter-badge">#${state.stats.total}</span>
+    </div>
+    <div class="exercise-prompt">Παραγοντοποίησε το πολυώνυμο:</div>
+    <div class="exercise-expr" id="exprContent">$$${data.expr}$$</div>
+  `;
+
+  // Hide solution
+  document.getElementById('solutionCard').classList.remove('visible');
+  document.getElementById('btnSolution').disabled = false;
+
+  // Update stats
+  updateStats();
+  buildProgressDots();
+
+  // Typeset
+  if (window.MathJax) MathJax.typesetPromise([card]);
+}
+
+function showSolution() {
+  state.stats.seenSolutions++;
+  updateStats();
+
+  const { method, expr, factored, steps } = state.current;
+  const card = document.getElementById('solutionCard');
+  const content = document.getElementById('solutionContent');
+
+  let html = '';
+  steps.forEach((step, i) => {
+    html += `
+      <div class="step">
+        <div class="step-num">0${i+1}</div>
+        <div class="step-content">
+          ${step.t}
+          <div class="math-block">$$${step.m}$$</div>
+        </div>
+      </div>`;
+  });
+
+  html += `
+    <div class="answer-box">
+      <div class="label">✓ Αποτέλεσμα</div>
+      <div class="result">$$${factored}$$</div>
+    </div>`;
+
+  content.innerHTML = html;
+  card.classList.add('visible');
+  document.getElementById('btnSolution').disabled = true;
+
+  if (window.MathJax) MathJax.typesetPromise([card]);
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent = state.stats.total;
+  document.getElementById('statSeen').textContent = state.stats.seenSolutions;
+  document.getElementById('statTypes').textContent = state.stats.typesSeen.size;
+}
+
+// ─────────────────────────────────────────────
+// Init
+// ─────────────────────────────────────────────
+buildMethodGrid();
+
+document.getElementById('btnNew').addEventListener('click', generateExercise);
+document.getElementById('btnSolution').addEventListener('click', showSolution);
+</script>
+</body>
+</html>
